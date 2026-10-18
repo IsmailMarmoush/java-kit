@@ -3,7 +3,7 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
 import com.marmoush.javakit.eventsourcing.state.StateIds;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
@@ -22,7 +22,7 @@ class DeciderTest {
   private final Decider decider = new SimpleDecider(() -> Ids.of(0), () -> 0L);
 
   @Test
-  void decideCreation() throws CommandException {
+  void decideCreation() throws CommandFailure {
     // Given
     var createState = new CreateState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));
 
@@ -35,7 +35,7 @@ class DeciderTest {
   }
 
   @Test
-  void decideEvolution() throws CommandException {
+  void decideEvolution() throws CommandFailure {
     // Given
     var someState = new SimpleState(new StateMeta(StateIds.of(0)));
     var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));

@@ -1,8 +1,9 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
+import com.marmoush.javakit.core.domain.Result;
 import com.marmoush.javakit.eventsourcing.aggregate.store.AggregateStore;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 
@@ -17,7 +18,7 @@ public class Aggregates {
     this.aggregateFactory = aggregateFactory;
   }
 
-  public Optional<Event> handle(StateId stateId, Command command) throws CommandException {
+  public Result<Optional<Event>, CommandFailure> handle(StateId stateId, Command command) {
     aggregateStore.computeIfAbsent(stateId, aggregateFactory::create);
     return aggregateStore.get(stateId).handle(command);
   }

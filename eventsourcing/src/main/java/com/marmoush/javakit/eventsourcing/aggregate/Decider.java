@@ -2,7 +2,7 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventIds;
@@ -21,7 +21,7 @@ public interface Decider {
    * @param eventMeta the new EventMeta
    * @return a new Event with eventMeta as its value
    */
-  Event decide(Command command, EventMeta eventMeta) throws CommandException;
+  Event decide(Command command, EventMeta eventMeta);
 
   /**
    * @param state     the initial state
@@ -29,15 +29,15 @@ public interface Decider {
    * @param eventMeta the new EventMeta
    * @return a new Event with eventMeta as its value
    *
-   * @throws CommandException when a checked ESException happens
+   * @throws CommandFailure when a checked ESException happens
    */
-  Event decide(State state, Command command, EventMeta eventMeta) throws CommandException;
+  Event decide(State state, Command command, EventMeta eventMeta);
 
-  default Event decide(Command command) throws CommandException {
+  default Event decide(Command command) {
     return decide(command, eventMeta(command));
   }
 
-  default Event decide(State state, Command command) throws CommandException {
+  default Event decide(State state, Command command) throws CommandFailure {
     return decide(state, command, eventMeta(state, command));
   }
 

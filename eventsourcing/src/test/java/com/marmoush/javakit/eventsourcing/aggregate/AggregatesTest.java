@@ -3,7 +3,7 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 import com.marmoush.javakit.eventsourcing.aggregate.store.AggregateStore;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.state.StateIds;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
@@ -24,7 +24,7 @@ public class AggregatesTest {
 
   @ParameterizedTest
   @MethodSource("stores")
-  void defaultSystem(AggregateStore aggregateStore) throws CommandException {
+  void defaultSystem(AggregateStore aggregateStore) throws CommandFailure {
     // Given
     var meta = new CommandMeta(CommandIds.of(UUID.randomUUID()), stateId);
     // When

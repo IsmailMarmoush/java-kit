@@ -3,7 +3,7 @@ package com.marmoush.javakit.eventsourcing.usecase.banking;
 import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.eventsourcing.aggregate.Decider;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.command.exceptions.InvalidCommand;
 import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
 import com.marmoush.javakit.eventsourcing.command.exceptions.UnknownCommandRTE;
@@ -46,7 +46,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   @Override
-  public Event decide(State state, Command command, EventMeta eventMeta) throws CommandException {
+  public Event decide(State state, Command command, EventMeta eventMeta) throws CommandFailure {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
         return decide(account, accountCommand, eventMeta);

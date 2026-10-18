@@ -2,7 +2,7 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventId;
@@ -51,7 +51,7 @@ class SyncAggregate implements Aggregate {
   }
 
   @Override
-  public synchronized Optional<Event> handle(Command command) throws CommandException {
+  public synchronized Optional<Event> handle(Command command) throws CommandFailure {
     initialize();
     // Validations should be after initialization
     if (isDuplicate(command)) {

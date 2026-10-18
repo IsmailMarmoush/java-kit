@@ -3,7 +3,7 @@ package com.marmoush.javakit.eventsourcing.usecase.simple;
 import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.eventsourcing.aggregate.Decider;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
+import com.marmoush.javakit.eventsourcing.command.CommandFailure;
 import com.marmoush.javakit.eventsourcing.command.exceptions.InvalidCommand;
 import com.marmoush.javakit.eventsourcing.command.exceptions.UnknownCommandRTE;
 import com.marmoush.javakit.eventsourcing.event.Event;
@@ -24,7 +24,7 @@ public record SimpleDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier
   }
 
   @Override
-  public Event decide(State state, Command command, EventMeta eventMeta) throws CommandException {
+  public Event decide(State state, Command command, EventMeta eventMeta) throws CommandFailure {
     if (state instanceof SimpleState simpleState) {
       return decide(command, simpleState);
     } else {
