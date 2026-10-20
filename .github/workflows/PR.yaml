@@ -12,6 +12,7 @@ concurrency:
 permissions:
   contents: read
   packages: read
+  pull-requests: write
 
 jobs:
   pr:
@@ -41,3 +42,14 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.organization=ismailmarmoush
           -Dsonar.projectKey=ismailmarmoush_java-kit
+
+      - name: Jacoco Report to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.8.0
+        with:
+          title: Code Coverage
+          update-comment: true
+          paths: target/jacoco-aggregate/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 70
+          min-coverage-changed-lines: 70
