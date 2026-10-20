@@ -48,7 +48,7 @@ jobs:
         with:
           reports: |
             core=core/target/site/jacoco/jacoco.xml
-            eventsourcing=eventsourcing/target/site/jacoco/jacoco.xml,
+            eventsourcing=eventsourcing/target/site/jacoco/jacoco.xml
             jackson=jackson/target/site/jacoco/jacoco.xml
 
 #      - name: Jacoco Report to PR
