@@ -25,7 +25,7 @@ class AccountEvolverTest {
                               300);
 
     // When
-    var acc = (OpenAccount) evolver.evolve(openAccount, debited);
+    var acc = (OpenAccount) evolver.evolve(openAccount, debited).get();
 
     // Then
     Assertions.assertThat(acc.balance()).isEqualTo(200);

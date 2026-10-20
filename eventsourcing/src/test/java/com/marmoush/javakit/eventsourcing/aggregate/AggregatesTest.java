@@ -3,11 +3,12 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 import com.marmoush.javakit.eventsourcing.aggregate.store.AggregateStore;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.command.CommandFailure;
+import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.state.StateIds;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,13 +25,16 @@ public class AggregatesTest {
 
   @ParameterizedTest
   @MethodSource("stores")
-  void defaultSystem(AggregateStore aggregateStore) throws CommandFailure {
+  void defaultSystem(AggregateStore aggregateStore) {
     // Given
     var meta = new CommandMeta(CommandIds.of(UUID.randomUUID()), stateId);
     // When
     var eventOpt = aggregates.handle(stateId, new CreateState(meta));
     // Then
-    assertThat(eventOpt).isPresent().containsInstanceOf(StateCreated.class);
+    assertThat(eventOpt).isPresent()
+                        .asInstanceOf(InstanceOfAssertFactories.type(DecisionEvent.class))
+                        .extracting(DecisionEvent::event)
+                        .isInstanceOf(StateCreated.class);
   }
 
   public static Stream<Arguments> stores() {

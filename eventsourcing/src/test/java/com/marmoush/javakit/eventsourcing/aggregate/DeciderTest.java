@@ -3,8 +3,6 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.command.CommandFailure;
-import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
 import com.marmoush.javakit.eventsourcing.state.StateIds;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
@@ -22,12 +20,12 @@ class DeciderTest {
   private final Decider decider = new SimpleDecider(() -> Ids.of(0), () -> 0L);
 
   @Test
-  void decideCreation() throws CommandFailure {
+  void decideCreation() {
     // Given
     var createState = new CreateState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));
 
     // When
-    var event = decider.decide(createState);
+    var event = decider.decide(createState).get();
 
     // Then
     assertThat(event).isInstanceOf(StateCreated.class);
@@ -35,13 +33,13 @@ class DeciderTest {
   }
 
   @Test
-  void decideEvolution() throws CommandFailure {
+  void decideEvolution() {
     // Given
     var someState = new SimpleState(new StateMeta(StateIds.of(0)));
     var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));
 
     // When
-    var event = decider.decide(someState, changeState);
+    var event = decider.decide(someState, changeState).get();
 
     // Then
     assertThat(event).isInstanceOf(StateChanged.class);

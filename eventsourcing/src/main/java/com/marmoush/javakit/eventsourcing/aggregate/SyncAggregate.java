@@ -1,12 +1,14 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
+import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.aggregate.error.DuplicateCommand;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateId;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventStateId;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersion;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
-import com.marmoush.javakit.eventsourcing.command.CommandFailure;
-import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventId;
-import com.marmoush.javakit.eventsourcing.event.exceptions.MismatchingEvent;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateId;
@@ -51,25 +53,36 @@ class SyncAggregate implements Aggregate {
   }
 
   @Override
-  public synchronized Optional<Event> handle(Command command) throws CommandFailure {
+  public synchronized DecisionResult handle(Command command) {
     initialize();
     // Validations should be after initialization
     if (isDuplicate(command)) {
-      return Optional.empty();
+      return DecisionResult.failure(DuplicateCommand.of(command));
     }
-    validate(command);
-    Event event;
+    // Return failure if it doesn't match state
+    if (!stateId().equals(command.stateId())) {
+      return DecisionResult.failure(MismatchingCommandStateId.of(stateId(), command));
+    }
+
+    var result = decide(command);
+    if (result instanceof DecisionEvent(Event event)) {
+      eventRepo.append(event);
+      String msg = "Event[%s] appended".formatted(event.meta());
+      log.debug(msg);
+      command.meta().sagaSource().ifPresent(sagaSources::add);
+    }
+    return result;
+  }
+
+  private DecisionResult decide(Command command) {
+    DecisionResult result;
     if (stateRef.get() == null) {
       // If still no state, expect a creation command
-      event = decider.decide(command);
+      result = decider.decide(command);
     } else {
-      event = decider.decide(stateRef.get(), command);
+      result = decider.decide(stateRef.get(), command);
     }
-    eventRepo.append(event);
-    String msg = "Event[%s] appended".formatted(event.meta());
-    log.debug(msg);
-    command.meta().sagaSource().ifPresent(sagaSources::add);
-    return Optional.of(event);
+    return result;
   }
 
   /**
@@ -105,19 +118,12 @@ class SyncAggregate implements Aggregate {
   void validate(Event event) {
     // Check if matches stateId
     if (!stateId().equals(event.stateId())) {
-      throw MismatchingEvent.of(stateId(), event);
+      throw MismatchingEventStateId.of(stateId(), event);
     }
     // Check if matches expected version
     long expectedVersion = Optional.ofNullable(stateRef.get()).map(State::version).map(v -> v + 1).orElse(0L);
     if (event.version() != expectedVersion) {
-      throw MismatchingEvent.of(event, expectedVersion);
-    }
-  }
-
-  void validate(Command command) {
-    // Check if matches stateId
-    if (!stateId().equals(command.stateId())) {
-      throw MismatchingCommandState.of(stateId(), command);
+      throw MismatchingEventVersion.of(event, expectedVersion);
     }
   }
 

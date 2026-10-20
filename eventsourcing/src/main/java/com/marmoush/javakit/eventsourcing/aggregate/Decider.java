@@ -1,10 +1,10 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
+import com.marmoush.javakit.core.domain.Result;
 import com.marmoush.javakit.core.id.Id;
+import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateId;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CommandFailure;
-import com.marmoush.javakit.eventsourcing.command.exceptions.MismatchingCommandState;
-import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventIds;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
@@ -21,45 +21,47 @@ public interface Decider {
    * @param eventMeta the new EventMeta
    * @return a new Event with eventMeta as its value
    */
-  Event decide(Command command, EventMeta eventMeta);
+  DecisionResult decide(Command command, EventMeta eventMeta);
 
   /**
    * @param state     the initial state
    * @param command   the incoming command
    * @param eventMeta the new EventMeta
-   * @return a new Event with eventMeta as its value
+   * @return a CommandResult with Event(eventMeta) as its value if accepted
    *
-   * @throws CommandFailure when a checked ESException happens
    */
-  Event decide(State state, Command command, EventMeta eventMeta);
+  DecisionResult decide(State state, Command command, EventMeta eventMeta);
 
-  default Event decide(Command command) {
+  default DecisionResult decide(Command command) {
     return decide(command, eventMeta(command));
   }
 
-  default Event decide(State state, Command command) throws CommandFailure {
-    return decide(state, command, eventMeta(state, command));
+  default DecisionResult decide(State state, Command command) {
+    return switch (eventMeta(state, command)) {
+      case Result.Failure<EventMeta, ESDomainError> e -> DecisionResult.failure(e.error());
+      case Result.Success<EventMeta, ESDomainError> success -> decide(state, command, success.value());
+    };
   }
 
-  default EventMeta eventMeta(Command cmd) {
+  default EventMeta eventMeta(Command command) {
     return new EventMeta(EventIds.of(idSupplier().get()),
                          0,
-                         cmd.meta().stateId(),
-                         cmd.meta().commandId(),
+                         command.meta().stateId(),
+                         command.meta().commandId(),
                          timeSupplier().get(),
-                         cmd.meta().sagaSource().orElse(null));
+                         command.meta().sagaSource().orElse(null));
   }
 
-  default EventMeta eventMeta(State state, Command cmd) {
-    if (state.meta().stateId().equals(cmd.meta().stateId())) {
-      return new EventMeta(EventIds.of(idSupplier().get()),
-                           state.meta().version() + 1,
-                           state.meta().stateId(),
-                           cmd.meta().commandId(),
-                           timeSupplier().get(),
-                           cmd.meta().sagaSource().orElse(null));
-    } else {
-      throw MismatchingCommandState.of(state.meta().stateId(), cmd);
+  default Result<EventMeta, ESDomainError> eventMeta(State state, Command command) {
+    if (!state.meta().stateId().equals(command.meta().stateId())) {
+      return Result.failure(MismatchingCommandStateId.of(state.meta().stateId(), command));
     }
+    var eMeta = new EventMeta(EventIds.of(idSupplier().get()),
+                              state.meta().version() + 1,
+                              state.meta().stateId(),
+                              command.meta().commandId(),
+                              timeSupplier().get(),
+                              command.meta().sagaSource().orElse(null));
+    return Result.success(eMeta);
   }
 }
