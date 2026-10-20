@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
+import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersion;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.exceptions.InvalidEvent;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 
@@ -36,7 +36,7 @@ public interface Evolver {
 
   default StateMeta stateMeta(State s, Event e) {
     if (s.version() + 1 != e.version()) {
-      throw InvalidEvent.ofEvolution(s, e);
+      throw MismatchingEventVersion.of(e, s.version() + 1);
     }
     return s.meta().incrementVersion();
   }

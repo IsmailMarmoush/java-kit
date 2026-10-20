@@ -1,11 +1,11 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
 import com.marmoush.javakit.eventsourcing.aggregate.Evolver;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledEventType;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.exceptions.UnknownEvent;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
-import com.marmoush.javakit.eventsourcing.state.exceptions.UnknownState;
+import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountClosed;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountCreated;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -24,7 +24,7 @@ public record AccountEvolver() implements Evolver {
   public State evolve(Event event, StateMeta stateMeta) {
     return switch (event) {
       case AccountCreated e -> new OpenAccount(stateMeta, e.name(), e.balance(), 0, 0, 0);
-      default -> throw UnknownEvent.of(event);
+      default -> throw UnhandledEventType.of(event);
     };
   }
 
@@ -37,10 +37,10 @@ public record AccountEvolver() implements Evolver {
           case ClosedAccount acc -> acc;
         };
       } else {
-        throw UnknownEvent.of(event);
+        throw UnhandledEventType.of(event);
       }
     } else {
-      throw UnknownState.of(state);
+      throw UnhandledStateType.of(state);
     }
   }
 

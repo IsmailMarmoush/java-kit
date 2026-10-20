@@ -2,7 +2,6 @@ package com.marmoush.javakit.eventsourcing.usecase.banking;
 
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.command.exceptions.CommandException;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Debit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -19,14 +18,14 @@ class AccountDeciderTest {
 
   @ParameterizedTest
   @ValueSource(ints = {300, 500, 600})
-  void debit(int debitAmount) throws CommandException {
+  void debit(int debitAmount)  {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(TestData.aliceId), TestData.alice, balance);
     var debit = new Debit(new CommandMeta(CommandIds.of(randomUUID()), TestData.aliceId), TestData.bobId, debitAmount);
 
     // When
-    var event = TestData.decider.decide(openAccount, debit);
+    var event = TestData.decider.decide(openAccount, debit).get();
     var accountEvent = (AccountEvent) event;
 
     // Then

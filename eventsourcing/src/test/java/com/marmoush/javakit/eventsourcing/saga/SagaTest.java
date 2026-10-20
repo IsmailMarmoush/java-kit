@@ -1,6 +1,7 @@
 package com.marmoush.javakit.eventsourcing.saga;
 
 import com.marmoush.javakit.core.id.Ids;
+import com.marmoush.javakit.eventsourcing.aggregate.Saga;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.event.EventIds;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
