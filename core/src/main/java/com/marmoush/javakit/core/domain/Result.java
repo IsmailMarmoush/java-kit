@@ -16,22 +16,22 @@ public sealed interface Result<T, E> permits Success, Failure {
 
   default <U> Result<U, E> map(Function<? super T, ? extends U> f) {
     return switch (this) {
-      case Result.Success<T, E> success -> new Success<>(f.apply(success.value()));
-      case Result.Failure<T, E> failure -> new Failure<>(failure.error());
+      case Success(T t) -> new Success<>(f.apply(t));
+      case Failure(E e) -> new Failure<>(e);
     };
   }
 
   default <U> Result<T, U> mapError(Function<? super E, ? extends U> f) {
     return switch (this) {
-      case Result.Success<T, E> success -> new Success<>(success.value());
-      case Result.Failure<T, E> failure -> new Failure<T, U>(f.apply(failure.error()));
+      case Success(T t) -> new Success<>(t);
+      case Failure(E e) -> new Failure<>(f.apply(e));
     };
   }
 
   default <U> Result<U, E> flatMap(Function<? super T, Result<U, E>> f) {
     return switch (this) {
-      case Result.Success<T, E> success -> f.apply(success.value());
-      case Result.Failure<T, E> failure -> new Failure<>(failure.error());
+      case Success(T t) -> f.apply(t);
+      case Failure(E e) -> new Failure<>(e);
     };
   }
 }

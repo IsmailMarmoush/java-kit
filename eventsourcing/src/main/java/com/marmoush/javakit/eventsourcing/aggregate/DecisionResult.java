@@ -1,10 +1,10 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.domain.Result;
-import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
-import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
+import com.marmoush.javakit.eventsourcing.event.Event;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -80,20 +80,18 @@ public sealed interface DecisionResult permits DecisionEvent, DecisionFailure {
     throw new IllegalStateException("%s isn't instance of DecisionError".formatted(this));
   }
 
-  /** Collapses both outcomes into one type, e.g. an HTTP response. */
   default <T> T fold(Function<? super DecisionEvent, ? extends T> onAccepted,
                      Function<? super ESDomainError, ? extends T> onRejected) {
     return switch (this) {
       case DecisionEvent decisionEvent -> onAccepted.apply(decisionEvent);
-      case DecisionFailure decisionFailure -> onRejected.apply(decisionFailure.failure());
+      case DecisionFailure(ESDomainError error) -> onRejected.apply(error);
     };
   }
 
-  /** Converts to a {@link Result} of the produced events. */
   default Result<Event, ESDomainError> toResult() {
     return switch (this) {
-      case DecisionEvent decisionEvent -> Result.success(decisionEvent.event());
-      case DecisionFailure decisionFailure -> Result.failure(decisionFailure.failure());
+      case DecisionEvent(Event event) -> Result.success(event);
+      case DecisionFailure(ESDomainError failure) -> Result.failure(failure);
     };
   }
 }

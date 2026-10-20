@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.id.Ids;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateId;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.state.StateIds;
@@ -53,9 +53,9 @@ class DeciderTest {
     var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of("differentStateId")));
 
     // When
-    var error =  decider.decide(someState, changeState).error();
+    var error = decider.decide(someState, changeState).error();
 
     // Then
-    assertThat(error).isInstanceOf(MismatchingCommandStateId.class);
+    assertThat(error).isInstanceOf(MismatchingCommandStateIdError.class);
   }
 }

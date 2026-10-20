@@ -18,7 +18,7 @@ class AccountDeciderTest {
 
   @ParameterizedTest
   @ValueSource(ints = {300, 500, 600})
-  void debit(int debitAmount)  {
+  void debit(int debitAmount) {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(TestData.aliceId), TestData.alice, balance);

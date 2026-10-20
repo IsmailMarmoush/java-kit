@@ -2,9 +2,9 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.aggregate.error.DuplicateCommand;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateId;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventStateId;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersion;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventStateIdException;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersionException;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
 import com.marmoush.javakit.eventsourcing.event.Event;
@@ -61,7 +61,7 @@ class SyncAggregate implements Aggregate {
     }
     // Return failure if it doesn't match state
     if (!stateId().equals(command.stateId())) {
-      return DecisionResult.failure(MismatchingCommandStateId.of(stateId(), command));
+      return DecisionResult.failure(MismatchingCommandStateIdError.of(stateId(), command));
     }
 
     var result = decide(command);
@@ -118,12 +118,12 @@ class SyncAggregate implements Aggregate {
   void validate(Event event) {
     // Check if matches stateId
     if (!stateId().equals(event.stateId())) {
-      throw MismatchingEventStateId.of(stateId(), event);
+      throw MismatchingEventStateIdException.of(stateId(), event);
     }
     // Check if matches expected version
     long expectedVersion = Optional.ofNullable(stateRef.get()).map(State::version).map(v -> v + 1).orElse(0L);
     if (event.version() != expectedVersion) {
-      throw MismatchingEventVersion.of(event, expectedVersion);
+      throw MismatchingEventVersionException.of(event, expectedVersion);
     }
   }
 
