@@ -38,8 +38,8 @@ public interface Decider {
 
   default DecisionResult decide(State state, Command command) {
     return switch (eventMeta(state, command)) {
-      case Result.Failure<EventMeta, ESDomainError> e -> DecisionResult.failure(e.error());
-      case Result.Success<EventMeta, ESDomainError> success -> decide(state, command, success.value());
+      case Result.Failure(ESDomainError error) -> DecisionResult.failure(error);
+      case Result.Success(EventMeta event) -> decide(state, command, event);
     };
   }
 
