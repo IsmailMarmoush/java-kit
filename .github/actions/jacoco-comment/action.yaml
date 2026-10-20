@@ -1,0 +1,297 @@
+name: JaCoCo Multi-Module Coverage Comment
+description: Summarize several jacoco.xml reports (one per module) in a single, updatable pull request comment
+
+inputs:
+  reports:
+    description: |
+      Newline-separated list of jacoco.xml paths. Globs are supported (e.g. **/target/site/jacoco/jacoco.xml).
+      Prefix a line with "Name=" to set the module label, e.g. "core=java-kit-core/target/site/jacoco/jacoco.xml".
+      Without a name, the label is the directory above target/ (or build/), falling back to the report name.
+    required: true
+  title:
+    description: Heading of the comment
+    default: Test Coverage
+  detail-level:
+    description: |
+      How much per-module detail to include in collapsible sections: "none", "package" or "class".
+      Falls back to a smaller level automatically if the comment would exceed GitHub's size limit.
+    default: package
+  green-threshold:
+    description: Line coverage (%) at or above which a module gets a green icon
+    default: '80'
+  yellow-threshold:
+    description: 'Line coverage (%) at or above which a module gets a yellow icon (below it: red)'
+    default: '50'
+  marker:
+    description: Hidden marker used to find and update the existing comment
+    default: '<!-- pr-jacoco-coverage -->'
+  github-token:
+    description: 'Token used to post the comment (needs pull-requests: write)'
+    default: ${{ github.token }}
+
+outputs:
+  line-coverage:
+    description: Total line coverage (%) across all modules
+    value: ${{ steps.report.outputs.line-coverage }}
+  branch-coverage:
+    description: Total branch coverage (%) across all modules
+    value: ${{ steps.report.outputs.branch-coverage }}
+  instruction-coverage:
+    description: Total instruction coverage (%) across all modules
+    value: ${{ steps.report.outputs.instruction-coverage }}
+
+runs:
+  using: composite
+  steps:
+    - name: Build coverage report
+      id: report
+      shell: bash
+      env:
+        REPORTS: ${{ inputs.reports }}
+        TITLE: ${{ inputs.title }}
+        DETAIL_LEVEL: ${{ inputs.detail-level }}
+        GREEN: ${{ inputs.green-threshold }}
+        YELLOW: ${{ inputs.yellow-threshold }}
+        MARKER: ${{ inputs.marker }}
+      run: |
+        python3 - <<'PY'
+        import glob
+        import html
+        import os
+        import sys
+        import xml.etree.ElementTree as ET
+        from pathlib import PurePath
+
+        COUNTERS = [
+            ("INSTRUCTION", "Instructions"),
+            ("BRANCH", "Branches"),
+            ("LINE", "Lines"),
+            ("COMPLEXITY", "Complexity"),
+            ("METHOD", "Methods"),
+            ("CLASS", "Classes"),
+        ]
+        LIMIT = 60000  # GitHub's comment limit is 65536 characters
+
+        title = os.environ["TITLE"]
+        marker = os.environ["MARKER"]
+        detail = os.environ.get("DETAIL_LEVEL", "package").strip().lower()
+        green = float(os.environ["GREEN"])
+        yellow = float(os.environ["YELLOW"])
+
+
+        def counters(node):
+            # Only direct <counter> children: a node's own totals, not its methods'.
+            return {
+                c.get("type"): (int(c.get("missed")), int(c.get("covered")))
+                for c in node.findall("counter")
+            }
+
+
+        def pct(missed, covered):
+            total = missed + covered
+            return None if total == 0 else covered * 100.0 / total
+
+
+        def cell(c, key):
+            missed, covered = c.get(key, (0, 0))
+            p = pct(missed, covered)
+            if p is None:
+                return "n/a"
+            return f"{p:.1f}% ({covered}/{missed + covered})"
+
+
+        def derive_name(path, root):
+            parts = PurePath(path).parts
+            for d in ("target", "build"):
+                if d in parts:
+                    idx = len(parts) - 1 - parts[::-1].index(d)
+                    if idx > 0:
+                        return parts[idx - 1]
+            return root.get("name") or PurePath(path).parent.name or path
+
+
+        # ---------------------------------------------------------------- collect
+        entries = []
+        warnings = []
+        seen = set()
+        for raw in os.environ["REPORTS"].splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            name, sep, pattern = line.partition("=")
+            if not sep:
+                name, pattern = "", line
+            name, pattern = name.strip(), pattern.strip()
+            matches = sorted(glob.glob(pattern, recursive=True))
+            if not matches:
+                warnings.append(pattern)
+                continue
+            for m in matches:
+                key = os.path.abspath(m)
+                if key in seen:
+                    continue
+                seen.add(key)
+                entries.append((name, m, len(matches) > 1))
+
+        modules = []
+        for name, path, multi in entries:
+            try:
+                root = ET.parse(path).getroot()
+            except Exception as e:  # malformed or unreadable XML
+                warnings.append(f"{path} ({type(e).__name__})")
+                continue
+            derived = derive_name(path, root)
+            if name and multi:
+                label = f"{name} / {derived}"
+            elif name:
+                label = name
+            else:
+                label = derived
+            pkgs = []
+            for p in root.findall("package"):
+                classes = [(c.get("name"), counters(c)) for c in p.findall("class")]
+                pkgs.append((p.get("name"), counters(p), classes))
+            modules.append(
+                {
+                    "label": label.replace("|", "\\|"),
+                    "path": path,
+                    "c": counters(root),
+                    "pkgs": pkgs,
+                }
+            )
+
+        if not modules:
+            print("::error::No readable jacoco.xml report found for the given 'reports' input")
+            sys.exit(1)
+
+        total = {}
+        for k, _ in COUNTERS:
+            total[k] = (
+                sum(m["c"].get(k, (0, 0))[0] for m in modules),
+                sum(m["c"].get(k, (0, 0))[1] for m in modules),
+            )
+
+
+        # ---------------------------------------------------------------- render
+        def icon(c):
+            p = pct(*c.get("LINE", (0, 0)))
+            if p is None:
+                return "⚪"
+            return "🟢" if p >= green else "🟡" if p >= yellow else "🔴"
+
+
+        def row(first, c):
+            return "| " + " | ".join([first] + [cell(c, k) for k, _ in COUNTERS]) + " |"
+
+
+        def table(first_col, rows):
+            head = "| " + " | ".join([first_col] + [t for _, t in COUNTERS]) + " |"
+            sep = "|:--|" + "--:|" * len(COUNTERS)
+            return "\n".join([head, sep] + rows)
+
+
+        def metrics_table(c):
+            lines = [
+                "| Metric | Missed | Covered | Total | Coverage |",
+                "|:--|--:|--:|--:|--:|",
+            ]
+            for k, t in COUNTERS:
+                missed, covered = c.get(k, (0, 0))
+                p = pct(missed, covered)
+                shown = "n/a" if p is None else f"{p:.1f}%"
+                lines.append(f"| {t} | {missed} | {covered} | {missed + covered} | {shown} |")
+            return "\n".join(lines)
+
+
+        def build(level, reduced=False):
+            out = [marker, f"## {title}", ""]
+            rows = [row(f"{icon(m['c'])} {m['label']}", m["c"]) for m in modules]
+            if len(modules) > 1:
+                rows.append(row("**Total**", total))
+            out += [table("Module", rows), ""]
+            out.append(
+                f"Cells show coverage % (covered/total). Icon reflects line coverage: "
+                f"🟢 ≥ {green:g}%, 🟡 ≥ {yellow:g}%, 🔴 below."
+            )
+            if warnings:
+                out += ["", "⚠️ Not found or unreadable: " + ", ".join(f"`{w}`" for w in warnings)]
+            if level != "none":
+                out.append("")
+                for m in modules:
+                    out.append("<details>")
+                    out.append(
+                        f"<summary><b>{html.escape(m['label'])}</b> · "
+                        f"<code>{html.escape(m['path'])}</code></summary>"
+                    )
+                    out += ["", metrics_table(m["c"]), ""]
+                    if m["pkgs"]:
+                        rows = []
+                        for pname, pc, classes in m["pkgs"]:
+                            shown = (pname or "(default package)").replace("/", ".")
+                            rows.append(row(f"`{shown}`", pc))
+                            if level == "class":
+                                for cname, cc in classes:
+                                    short = (cname or "").split("/")[-1]
+                                    rows.append(row(f"&nbsp;&nbsp;`{short}`", cc))
+                        first = "Package / class" if level == "class" else "Package"
+                        out += [table(first, rows), ""]
+                    out += ["</details>", ""]
+            if reduced:
+                out.append(f"> ℹ️ Details reduced to `{level}` level to fit GitHub's comment size limit.")
+            return "\n".join(out).rstrip() + "\n"
+
+
+        levels = ["class", "package", "none"]
+        start = levels.index(detail) if detail in levels else 1
+        chosen = levels[start]
+        for lvl in levels[start:]:
+            chosen = lvl
+            if len(build(lvl)) <= LIMIT:
+                break
+        body = build(chosen, reduced=chosen != levels[start])
+
+        # ---------------------------------------------------------------- write
+        with open(os.path.join(os.environ["RUNNER_TEMP"], "jacoco-comment.md"), "w", encoding="utf-8") as f:
+            f.write(body)
+
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            with open(summary, "a", encoding="utf-8") as f:
+                f.write(body)
+
+
+        def total_pct(key):
+            p = pct(*total[key])
+            return "" if p is None else f"{p:.2f}"
+
+
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+            f.write(f"line-coverage={total_pct('LINE')}\n")
+            f.write(f"branch-coverage={total_pct('BRANCH')}\n")
+            f.write(f"instruction-coverage={total_pct('INSTRUCTION')}\n")
+        PY
+
+    - name: Post or update PR comment
+      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        MARKER: ${{ inputs.marker }}
+      run: |
+        FILE="$RUNNER_TEMP/jacoco-comment.md"
+
+        COMMENT_ID=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" --paginate \
+          | jq -r --arg m "$MARKER" '.[] | select(.body | contains($m)) | .id' \
+          | head -n 1) || true
+
+        if [ -n "$COMMENT_ID" ]; then
+          gh api --method PATCH "repos/${REPO}/issues/comments/${COMMENT_ID}" \
+            -F body=@"$FILE" > /dev/null \
+            || echo "::warning::Could not update the coverage comment (read-only token on a fork PR?). The report is in the job summary."
+        else
+          gh api --method POST "repos/${REPO}/issues/${PR_NUMBER}/comments" \
+            -F body=@"$FILE" > /dev/null \
+            || echo "::warning::Could not post the coverage comment (read-only token on a fork PR?). The report is in the job summary."
+        fi
