@@ -53,8 +53,8 @@ jobs:
           title: Code Coverage
           update-comment: true
           paths: |
-            ${{ github.workspace }}/core/target/site/jacoco-aggregate/jacoco.xml,
-            ${{ github.workspace }}/eventsourcing/target/site/jacoco-aggregate/jacoco.xml,
-            ${{ github.workspace }}/jackson/target/site/jacoco-aggregate/jacoco.xml
+            core/target/site/jacoco/jacoco.xml,
+            eventsourcing/target/site/jacoco/jacoco.xml,
+            jackson/target/site/jacoco/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 70
