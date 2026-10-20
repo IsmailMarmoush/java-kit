@@ -10,7 +10,7 @@ import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandTy
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.AccountCommand;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ChangeName;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.CloseAccount;
@@ -53,7 +53,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
         throw UnhandledCommandTypeException.of(command);
       }
     } else {
-      throw UnhandledStateType.of(state);
+      throw UnhandledStateTypeException.of(state);
     }
   }
 

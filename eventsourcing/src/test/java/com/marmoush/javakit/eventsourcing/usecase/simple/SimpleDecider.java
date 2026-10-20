@@ -9,7 +9,7 @@ import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandTy
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 
 import java.util.function.Supplier;
 
@@ -28,7 +28,7 @@ public record SimpleDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier
     if (state instanceof SimpleState simpleState) {
       return decide(command, simpleState, eventMeta);
     } else {
-      throw UnhandledStateType.of(state);
+      throw UnhandledStateTypeException.of(state);
     }
   }
 

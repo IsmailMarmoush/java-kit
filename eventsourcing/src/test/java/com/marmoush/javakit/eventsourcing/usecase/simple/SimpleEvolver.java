@@ -6,7 +6,7 @@ import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledEventType
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
-import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 
 public record SimpleEvolver() implements Evolver {
   @Override
@@ -24,10 +24,10 @@ public record SimpleEvolver() implements Evolver {
       return switch (event) {
         case StateCreated stateCreated -> throw MismatchingEventException.of(simpleState, stateCreated);
         case StateChanged _ -> new SimpleState(stateMeta);
-        default -> throw UnhandledStateType.of(simpleState);
+        default -> throw UnhandledStateTypeException.of(simpleState);
       };
     } else {
-      throw UnhandledStateType.of(state);
+      throw UnhandledStateTypeException.of(state);
     }
   }
 }

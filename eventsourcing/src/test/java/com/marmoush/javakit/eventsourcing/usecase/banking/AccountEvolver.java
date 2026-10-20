@@ -5,7 +5,7 @@ import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledEventType
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
-import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountClosed;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountCreated;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -40,7 +40,7 @@ public record AccountEvolver() implements Evolver {
         throw UnhandledEventTypeException.of(event);
       }
     } else {
-      throw UnhandledStateType.of(state);
+      throw UnhandledStateTypeException.of(state);
     }
   }
 
