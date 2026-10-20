@@ -43,9 +43,6 @@ jobs:
           -Dsonar.organization=ismailmarmoush
           -Dsonar.projectKey=ismailmarmoush_java-kit
 
-      - name: ls
-        run: ls
-
       - name: Jacoco Report to PR
         id: jacoco
         uses: madrapps/jacoco-report@e51ce1f46f7f8b5331593f935e59cbaf44b84920
