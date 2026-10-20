@@ -42,7 +42,6 @@
             **/errors/*.java,
             **/*Error.java,
             testsuite/**/*.java,
-            **/*.xml,**/*.yml,**/*.yaml,**/*.json,**/*.properties
         </sonar.coverage.exclusions>
     </properties>
 
