@@ -26,7 +26,7 @@ class ResultTest {
   private static Result<Integer, Failure> parse(String s) {
     try {
       return Result.success(Integer.parseInt(s));
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       return Result.failure(new Invalid("not a number: " + s));
     }
   }
