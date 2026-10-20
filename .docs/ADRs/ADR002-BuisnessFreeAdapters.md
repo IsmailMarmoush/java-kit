@@ -4,8 +4,8 @@ In Active and Reactive libraries:
 
 * Should we implement a command handler at infrastructure level ?
     * If we do so this would mean EventSourcing business logic (e.g Event, Command) would be now leaked to
-      infrastructure, any change there would affect all adapters, instead we should represent the logic technically (
-      saving a Partitioned/Versioned Entity) on Infrastructure level, and isolating domain level ES.
+      infrastructure, any change there would affect all adapters, instead we should represent the logic technically
+      (saving a Partitioned/Versioned Entity) on Infrastructure level, and isolating domain level ES.
     * Counterargument: is that these are kafka adapters the logic here is not domain business logic, event is part of
       the infrastructure data types, this is an Eventsourcing adapter to work with Cassandra or Kafka
 

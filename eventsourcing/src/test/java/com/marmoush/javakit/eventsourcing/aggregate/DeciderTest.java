@@ -53,7 +53,7 @@ class DeciderTest {
     var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of("differentStateId")));
 
     // When
-    var error =  decider.decide(someState, changeState).error();
+    var error = decider.decide(someState, changeState).error();
 
     // Then
     assertThat(error).isInstanceOf(MismatchingCommandStateId.class);

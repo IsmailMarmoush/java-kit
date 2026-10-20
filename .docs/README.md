@@ -96,7 +96,7 @@ events) **should be under a flag** since it generates all saga commands again as
 
 Initially all processed `eventIds` were kept in hash sets, but I soon came to realise the
 eventId can not be having wrong order due to redelivery it will just be delivered twice or more but consecutively,
-meaning the partition could deliver(e3,e2,e1,e1) but not (e3,e1,e2,e1) this is guaranteed by any stream framework (e.g
+meaning the partition could deliver (e3,e2,e1,e1) but not (e3,e1,e2,e1) this is guaranteed by any stream framework (e.g
 kafka nats) that
 messages in certain partitions are saved in same order they were produced, from this I needed to do some sort of
 runtime compaction to avoid ingesting e1 twice, note that the sequence/version belongs to the event not the partition,
