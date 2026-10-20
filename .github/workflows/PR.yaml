@@ -48,7 +48,7 @@ jobs:
 
       - name: Jacoco Report to PR
         id: jacoco
-        uses: madrapps/jacoco-report@v1.8.0
+        uses: madrapps/jacoco-report@e51ce1f46f7f8b5331593f935e59cbaf44b84920
         with:
           title: Code Coverage
           update-comment: true
@@ -57,4 +57,5 @@ jobs:
             core/target/site/jacoco/jacoco.xml,
             jackson/target/site/jacoco/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 70
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
