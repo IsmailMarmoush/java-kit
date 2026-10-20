@@ -50,17 +50,3 @@ jobs:
             core=core/target/site/jacoco/jacoco.xml
             eventsourcing=eventsourcing/target/site/jacoco/jacoco.xml
             jackson=jackson/target/site/jacoco/jacoco.xml
-
-#      - name: Jacoco Report to PR
-#        id: jacoco
-#        uses: madrapps/jacoco-report@e51ce1f46f7f8b5331593f935e59cbaf44b84920
-#        with:
-#          title: Code Coverage
-#          update-comment: true
-#          paths: |
-#            eventsourcing/target/site/jacoco/jacoco.xml,
-#            core/target/site/jacoco/jacoco.xml,
-#            jackson/target/site/jacoco/jacoco.xml
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          min-coverage-overall: 80
-#          min-coverage-changed-files: 80
