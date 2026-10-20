@@ -3,7 +3,7 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 import com.marmoush.javakit.core.domain.Result;
 import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateId;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.EventIds;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
@@ -54,7 +54,7 @@ public interface Decider {
 
   default Result<EventMeta, ESDomainError> eventMeta(State state, Command command) {
     if (!state.meta().stateId().equals(command.meta().stateId())) {
-      return Result.failure(MismatchingCommandStateId.of(state.meta().stateId(), command));
+      return Result.failure(MismatchingCommandStateIdError.of(state.meta().stateId(), command));
     }
     var eMeta = new EventMeta(EventIds.of(idSupplier().get()),
                               state.meta().version() + 1,

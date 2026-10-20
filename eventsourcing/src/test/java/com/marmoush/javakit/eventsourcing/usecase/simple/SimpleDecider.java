@@ -4,8 +4,8 @@ import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.eventsourcing.aggregate.Decider;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommand;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandType;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandError;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandTypeException;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
@@ -19,7 +19,7 @@ public record SimpleDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier
     if (command instanceof CreateState) {
       return DecisionResult.of(new StateCreated(eventMeta));
     } else {
-      throw UnhandledCommandType.of(command);
+      throw UnhandledCommandTypeException.of(command);
     }
   }
 
@@ -34,9 +34,9 @@ public record SimpleDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier
 
   private DecisionResult decide(Command command, SimpleState simpleState, EventMeta eventMeta) {
     return switch (command) {
-      case CreateState createState -> DecisionFailure.of(MismatchingCommand.of(simpleState, createState));
+      case CreateState createState -> DecisionFailure.of(MismatchingCommandError.of(simpleState, createState));
       case ChangeState _ -> DecisionResult.success(new StateChanged(eventMeta));
-      default -> throw UnhandledCommandType.of(command);
+      default -> throw UnhandledCommandTypeException.of(command);
     };
   }
 }
