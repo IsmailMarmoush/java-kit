@@ -1,5 +1,6 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
+import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersion;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.event.EventIds;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
@@ -50,7 +51,7 @@ class EvolverTest {
     var someState = new SimpleState(new StateMeta(StateIds.of(0)));
     var stateChanged = new StateChanged(new EventMeta(EventIds.of(0), 10, StateIds.of(0), CommandIds.of(0)));
 
-    // When
-    assertThatThrownBy(() -> evolver.evolve(someState, stateChanged)).isInstanceOf(InvalidEvent.class);
+    // Then
+    assertThatThrownBy(() -> evolver.evolve(someState, stateChanged)).isInstanceOf(MismatchingEventVersion.class);
   }
 }

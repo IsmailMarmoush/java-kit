@@ -2,7 +2,7 @@ package com.marmoush.javakit.eventsourcing.aggregate.exception;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
 
-public final class MismatchingEventVersion extends RuntimeException {
+public final class MismatchingEventVersion extends IllegalStateException {
   private static final String MSG = "Can't evolve State with unexpected version %s of Event(eventMeta=%s)";
 
   public static MismatchingEventVersion of(Event event, long expectedVersion) {

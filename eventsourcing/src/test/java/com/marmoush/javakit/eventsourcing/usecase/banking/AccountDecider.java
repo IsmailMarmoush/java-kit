@@ -9,7 +9,7 @@ import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingState;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommand;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.AccountCommand;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ChangeName;
@@ -74,7 +74,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
 
   private DecisionResult decide(OpenAccount account, AccountCommand command, EventMeta meta) {
     return switch (command) {
-      case CreateAccount cmd -> DecisionFailure.of(MismatchingState.of(account, cmd));
+      case CreateAccount cmd -> DecisionFailure.of(MismatchingCommand.of(account, cmd));
       case ChangeName cmd -> DecisionEvent.of(new NameChanged(meta, cmd.name()));
       case Debit cmd -> tryToDebit(cmd, account, meta);
       case Credit cmd -> DecisionEvent.of(new Credited(meta, cmd.debitedAcc(), cmd.amount()));
@@ -87,10 +87,10 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
     return switch (command) {
       case Credit cmd -> DecisionEvent.of(new CreditRejected(meta, cmd.debitedAcc(), cmd.amount()));
       case ConfirmDebit _ -> DecisionEvent.of(new DebitConfirmed(meta));
-      case ChangeName cmd -> DecisionFailure.of(MismatchingState.of(state, cmd));
-      case Debit cmd -> DecisionFailure.of(MismatchingState.of(state, cmd));
-      case CreateAccount cmd -> DecisionFailure.of(MismatchingState.of(state, cmd));
-      case CloseAccount cmd -> DecisionFailure.of(MismatchingState.of(state, cmd));
+      case ChangeName cmd -> DecisionFailure.of(MismatchingCommand.of(state, cmd));
+      case Debit cmd -> DecisionFailure.of(MismatchingCommand.of(state, cmd));
+      case CreateAccount cmd -> DecisionFailure.of(MismatchingCommand.of(state, cmd));
+      case CloseAccount cmd -> DecisionFailure.of(MismatchingCommand.of(state, cmd));
     };
   }
 

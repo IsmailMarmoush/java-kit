@@ -3,7 +3,7 @@ package com.marmoush.javakit.eventsourcing.aggregate.exception;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 
-public final class MismatchingEventStateId extends RuntimeException {
+public final class MismatchingEventStateId extends IllegalStateException {
   private static final String MESSAGE = "Mismatching Event and state Ids: State(StateId=%s) != Event(StateId=%s)";
 
   public static MismatchingEventStateId of(StateId stateId, Event event) {

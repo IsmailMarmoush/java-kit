@@ -1,6 +1,7 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.id.Ids;
+import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateId;
 import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.state.StateIds;
@@ -14,7 +15,6 @@ import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DeciderTest {
   private final Decider decider = new SimpleDecider(() -> Ids.of(0), () -> 0L);
@@ -52,7 +52,10 @@ class DeciderTest {
     var someState = new SimpleState(new StateMeta(StateIds.of("stateId")));
     var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of("differentStateId")));
 
-    // then
-    assertThatThrownBy(() -> decider.decide(someState, changeState)).isInstanceOf(MismatchingCommandState.class);
+    // When
+    var error =  decider.decide(someState, changeState).error();
+
+    // Then
+    assertThat(error).isInstanceOf(MismatchingCommandStateId.class);
   }
 }

@@ -2,12 +2,10 @@ package com.marmoush.javakit.eventsourcing.usecase.banking;
 
 import com.marmoush.javakit.eventsourcing.aggregate.Evolver;
 import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledEventType;
-import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.evolution.EvolutionResult;
-import com.marmoush.javakit.eventsourcing.evolution.EvolutionResult.EvolutionState;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
+import com.marmoush.javakit.eventsourcing.state.UnhandledStateType;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountClosed;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountCreated;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -23,20 +21,20 @@ public record AccountEvolver() implements Evolver {
 
   @Override
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
-  public EvolutionResult evolve(Event event, StateMeta stateMeta) {
+  public State evolve(Event event, StateMeta stateMeta) {
     return switch (event) {
-      case AccountCreated e -> EvolutionState.of(new OpenAccount(stateMeta, e.name(), e.balance(), 0, 0, 0));
+      case AccountCreated e -> new OpenAccount(stateMeta, e.name(), e.balance(), 0, 0, 0);
       default -> throw UnhandledEventType.of(event);
     };
   }
 
   @Override
-  public EvolutionResult evolve(State state, Event event, StateMeta stateMeta) {
+  public State evolve(State state, Event event, StateMeta stateMeta) {
     if (state instanceof Account account) {
       if (event instanceof AccountEvent accountEvent) {
         return switch (account) {
-          case OpenAccount openAccount -> EvolutionState.of(handle(openAccount, accountEvent, stateMeta));
-          case ClosedAccount acc -> EvolutionState.of(acc);
+          case OpenAccount openAccount -> handle(openAccount, accountEvent, stateMeta);
+          case ClosedAccount acc -> acc;
         };
       } else {
         throw UnhandledEventType.of(event);
