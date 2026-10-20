@@ -49,7 +49,7 @@ jobs:
         with:
           title: Code Coverage
           update-comment: true
-          paths: target/jacoco-aggregate/jacoco.xml
+          paths: target/site/jacoco-aggregate/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 70
           min-coverage-changed-lines: 70
