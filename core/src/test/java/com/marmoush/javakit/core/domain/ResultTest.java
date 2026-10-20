@@ -120,6 +120,64 @@ class ResultTest {
   }
 
   // ---------------------------------------------------------------------------------------------
+  // mapError
+  // ---------------------------------------------------------------------------------------------
+
+  @Nested
+  class MapError {
+
+    @Test
+    void onErr_transformsError() {
+      // Given
+      Result<Integer, Failure> result = Result.failure(new NotFound("x"));
+
+      // When
+      var mapped = result.mapError(error -> error instanceof NotFound(String id) ? new Invalid("missing: " + id)
+                                                                                 : error);
+
+      // Then
+      assertEquals(Result.failure(new Invalid("missing: x")), mapped);
+    }
+
+    @Test
+    void onErr_canChangeErrorType() {
+      // Given
+      Result<Integer, String> result = Result.<Integer, Failure>failure(new NotFound("x")).mapError(Failure::toString);
+
+      // When / Then
+      assertEquals(Result.failure("NotFound[id=x]"), result);
+    }
+
+    @Test
+    void onOk_keepsValueUnchanged() {
+      // Given
+      Result<Integer, Failure> result = Result.success(7);
+
+      // When
+      var mapped = result.mapError(Failure::toString);
+
+      // Then
+      assertEquals(Result.success(7), mapped);
+    }
+
+    @Test
+    void onOk_neverCallsFunction() {
+      // Given
+      var calls = new AtomicInteger();
+      Result<Integer, Failure> result = Result.success(7);
+
+      // When
+      result.mapError(error -> {
+        calls.incrementAndGet();
+        return error;
+      });
+
+      // Then
+      assertEquals(0, calls.get());
+    }
+  }
+
+  // ---------------------------------------------------------------------------------------------
   // flatMap
   // ---------------------------------------------------------------------------------------------
 
