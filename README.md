@@ -84,14 +84,15 @@ Then import in your pom dependencies
 
 The versioning is similar to semantic but with a shift where the first segment being the jdk version.
 
-Format Example: `JDK_Version.major.mino`
+Format Example: `JDK_Version.major.minor`
 
 ## Developer Guide
 
-* [x] Increase test coverage to >85%
-* [ ] Publish to maven instead of Github
-* [ ] Event-sourcing refactoring
-* [ ] Performance and benchmarks project "atom-performance"
+* [ ] Increase test coverage to >90%
+* [ ] Publish to maven central instead of Github
+* Event-sourcing 
+  * [ ] Id refactoring
+* [ ] Performance and benchmarks
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
 
