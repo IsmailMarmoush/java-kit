@@ -15,7 +15,7 @@ class JDK19Test {
 
   static double area(Shape r) {
     return switch (r) {
-      case Circle(Point _, int radius) -> Math.PI * radius;
+      case Circle(_, int radius) -> Math.PI * radius;
       case Square(Point(int x1, int y1), Point(int x2, int y2)) -> Math.abs(x2 - x1) * Math.abs(y2 - y1);
       case null -> throw new NullPointerException();
       default -> 0;
