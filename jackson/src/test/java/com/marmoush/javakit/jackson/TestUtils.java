@@ -2,7 +2,7 @@ package com.marmoush.javakit.jackson;
 
 import com.marmoush.javakit.core.text.TextTransformer;
 
-public class Tests {
+public class TestUtils {
   public static final TextTransformer json;
   public static final TextTransformer compactJson;
   public static final TextTransformer yaml;

@@ -13,7 +13,7 @@ import tools.jackson.dataformat.yaml.YAMLMapper;
 import java.io.IOException;
 import java.util.List;
 
-import static com.marmoush.javakit.jackson.Tests.json;
+import static com.marmoush.javakit.jackson.TestUtils.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
