@@ -1,8 +1,9 @@
-package com.marmoush.javakit.core.domain;
+package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.core.math.MathOps;
+import com.marmoush.javakit.eventsourcing.Partitioned;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
