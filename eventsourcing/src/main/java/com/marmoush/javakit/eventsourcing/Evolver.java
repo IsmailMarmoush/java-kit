@@ -1,6 +1,6 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing;
 
-import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersionException;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingEventVersionException;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;

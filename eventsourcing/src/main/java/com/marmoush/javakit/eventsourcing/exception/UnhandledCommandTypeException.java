@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.aggregate.exception;
+package com.marmoush.javakit.eventsourcing.exception;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
 

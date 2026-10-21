@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.aggregate.error;
+package com.marmoush.javakit.eventsourcing.error;
 
 import java.util.Objects;
 

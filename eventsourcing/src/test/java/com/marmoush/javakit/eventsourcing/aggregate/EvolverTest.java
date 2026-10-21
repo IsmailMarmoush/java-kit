@@ -1,10 +1,13 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersionException;
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
+import com.marmoush.javakit.eventsourcing.Evolver;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingEventVersionException;
+
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.state.StateIds;
+
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolver;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleState;
@@ -21,7 +24,7 @@ class EvolverTest {
   @Test
   void evolveCreation() {
     // Given
-    var stateCreated = new StateCreated(new EventMeta(EventIds.of(0), 0, StateIds.of(0), CommandIds.of(0)));
+    var stateCreated = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0)));
 
     // When
     var event = evolver.evolve(stateCreated);
@@ -34,8 +37,8 @@ class EvolverTest {
   @Test
   void evolveEvolution() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateIds.of(0)));
-    var stateChanged = new StateChanged(new EventMeta(EventIds.of(0), 1, StateIds.of(0), CommandIds.of(0)));
+    var someState = new SimpleState(new StateMeta(StateId.of(0)));
+    var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 1, StateId.of(0), CommandId.of(0)));
 
     // When
     var event = evolver.evolve(someState, stateChanged);
@@ -48,8 +51,8 @@ class EvolverTest {
   @Test
   void evolveEvolutionFail() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateIds.of(0)));
-    var stateChanged = new StateChanged(new EventMeta(EventIds.of(0), 10, StateIds.of(0), CommandIds.of(0)));
+    var someState = new SimpleState(new StateMeta(StateId.of(0)));
+    var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 10, StateId.of(0), CommandId.of(0)));
 
     // Then
     assertThatThrownBy(() -> evolver.evolve(someState,

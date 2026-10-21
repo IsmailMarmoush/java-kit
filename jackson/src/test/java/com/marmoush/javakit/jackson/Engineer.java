@@ -1,6 +1,6 @@
 package com.marmoush.javakit.jackson;
 
-import com.marmoush.javakit.core.id.Id;
+
 
 import java.time.LocalDate;
 import java.util.List;

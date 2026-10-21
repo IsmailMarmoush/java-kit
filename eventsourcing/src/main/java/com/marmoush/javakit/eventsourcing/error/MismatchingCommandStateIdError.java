@@ -1,7 +1,7 @@
-package com.marmoush.javakit.eventsourcing.aggregate.error;
+package com.marmoush.javakit.eventsourcing.error;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 
 public final class MismatchingCommandStateIdError extends DefaultESDomainError {
   private static final String MESSAGE = "Mismatching command and state Ids: State(StateId=%s) != Command(StateId=%s)";

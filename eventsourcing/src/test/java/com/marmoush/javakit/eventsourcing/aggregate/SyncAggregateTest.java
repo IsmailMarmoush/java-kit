@@ -1,14 +1,16 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.id.Ids;
-import com.marmoush.javakit.eventsourcing.aggregate.error.DuplicateCommand;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
+import com.marmoush.javakit.eventsourcing.error.DuplicateCommand;
+import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
+
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
+
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
-import com.marmoush.javakit.eventsourcing.state.StateId;
-import com.marmoush.javakit.eventsourcing.state.StateIds;
+import com.marmoush.javakit.eventsourcing.id.StateId;
+
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
@@ -24,13 +26,13 @@ public class SyncAggregateTest {
   @Test
   void handlesCreationAndSubsequentEvolution() {
     // Given
-    var stateId = StateIds.of(0);
+    var stateId = StateId.of(0);
     var eventRepo = EventRepo.inMemory();
     var aggregate = newAggregate(stateId, eventRepo);
 
     // When
     var created = aggregate.handle(command(0, stateId));
-    var changed = aggregate.handle(new ChangeState(new CommandMeta(CommandIds.of(1), stateId)));
+    var changed = aggregate.handle(new ChangeState(new CommandMeta(CommandId.of(1), stateId)));
 
     // Then
     assertThat(created.get()).isInstanceOf(StateCreated.class);
@@ -42,7 +44,7 @@ public class SyncAggregateTest {
   @Test
   void rejectsDuplicateCommandWithoutAppendingAnotherEvent() {
     // Given
-    var stateId = StateIds.of(0);
+    var stateId = StateId.of(0);
     var eventRepo = EventRepo.inMemory();
     var aggregate = newAggregate(stateId, eventRepo);
     var command = command(0, stateId);
@@ -59,8 +61,8 @@ public class SyncAggregateTest {
   @Test
   void rejectsCommandForDifferentState() {
     // Given
-    var stateId = StateIds.of(0);
-    var otherStateId = StateIds.of(1);
+    var stateId = StateId.of(0);
+    var otherStateId = StateId.of(1);
     var eventRepo = EventRepo.inMemory();
     var aggregate = newAggregate(stateId, eventRepo);
 
@@ -75,15 +77,15 @@ public class SyncAggregateTest {
   @Test
   void rejectsCommandWithPreviouslyProcessedSagaSource() {
     // Given
-    var stateId = StateIds.of(0);
+    var stateId = StateId.of(0);
     var eventRepo = EventRepo.inMemory();
     var aggregate = newAggregate(stateId, eventRepo);
-    var sagaSource = EventIds.of(100);
+    var sagaSource = EventId.of(100);
     aggregate.handle(command(0, stateId));
-    aggregate.handle(new ChangeState(new CommandMeta(CommandIds.of(1), stateId, 0L, sagaSource)));
+    aggregate.handle(new ChangeState(new CommandMeta(CommandId.of(1), stateId, 0L, sagaSource)));
 
     // When
-    var result = aggregate.handle(new ChangeState(new CommandMeta(CommandIds.of(2), stateId, 0L, sagaSource)));
+    var result = aggregate.handle(new ChangeState(new CommandMeta(CommandId.of(2), stateId, 0L, sagaSource)));
 
     // Then
     assertThat(result.error()).isInstanceOf(DuplicateCommand.class);
@@ -97,6 +99,6 @@ public class SyncAggregateTest {
 
   @SuppressWarnings("SameParameterValue")
   private static CreateState command(int commandId, StateId stateId) {
-    return new CreateState(new CommandMeta(CommandIds.of(commandId), stateId));
+    return new CreateState(new CommandMeta(CommandId.of(commandId), stateId));
   }
 }

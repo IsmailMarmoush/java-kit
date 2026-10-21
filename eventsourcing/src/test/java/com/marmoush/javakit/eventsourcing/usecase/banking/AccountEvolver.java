@@ -1,8 +1,8 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.eventsourcing.aggregate.Evolver;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledEventTypeException;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
+import com.marmoush.javakit.eventsourcing.Evolver;
+import com.marmoush.javakit.eventsourcing.exception.UnhandledEventTypeException;
+import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;

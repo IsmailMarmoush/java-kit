@@ -1,8 +1,9 @@
 package com.marmoush.javakit.eventsourcing.state;
 
 import com.github.f4b6a3.uuid.UuidCreator;
-import com.marmoush.javakit.core.id.Id;
+
 import com.marmoush.javakit.core.id.Ids;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,28 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class StateIdTest {
+  @Test
+  void testOfString() {
+    StateId id = StateId.of("123");
+    assertEquals("123", id.value());
+  }
+
+  @Test
+  void testOfLong() {
+    StateId id = StateId.of(123L);
+    assertEquals("123", id.value());
+  }
+
+  @Test
+  void testOfUUID() {
+    UUID uuid = UUID.randomUUID();
+    StateId id = StateId.of(uuid);
+    assertEquals(uuid.toString(), id.value());
+  }
+
   @Test
   void checkToString() {
     Assertions.assertThat(new StateId("id")).hasToString("id");
@@ -30,8 +52,8 @@ class StateIdTest {
     var uuidStr = uuid.toString();
 
     // When
-    var id1 = StateIds.of(uuid);
-    var id2 = StateIds.of(uuidStr);
+    var id1 = StateId.of(uuid);
+    var id2 = StateId.of(uuidStr);
 
     // Then
     Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
@@ -41,15 +63,15 @@ class StateIdTest {
   void validation() {
     String str = null;
     //noinspection ConstantValue
-    Assertions.assertThatNullPointerException().isThrownBy(() -> StateIds.of(str));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateIds.of(-1L));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateIds.of(""));
+    Assertions.assertThatNullPointerException().isThrownBy(() -> StateId.of(str));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateId.of(-1L));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateId.of(""));
   }
 
   @Test
   void uuidOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(StateIds.of(UuidCreator.getTimeOrderedEpoch()), i));
+    IntStream.range(0, 1000).forEach(i -> map.put(StateId.of(UuidCreator.getTimeOrderedEpoch()), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
@@ -57,7 +79,7 @@ class StateIdTest {
   @Test
   void seqIdOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(StateIds.of(i), i));
+    IntStream.range(0, 1000).forEach(i -> map.put(StateId.of(i), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }

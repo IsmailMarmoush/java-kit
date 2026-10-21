@@ -7,6 +7,8 @@ module com.marmoush.javakit.eventsourcing {
   exports com.marmoush.javakit.eventsourcing.event;
   exports com.marmoush.javakit.eventsourcing.event.repo;
   exports com.marmoush.javakit.eventsourcing.state;
-  exports com.marmoush.javakit.eventsourcing.aggregate.error;
-  exports com.marmoush.javakit.eventsourcing.aggregate.exception;
+  exports com.marmoush.javakit.eventsourcing.error;
+  exports com.marmoush.javakit.eventsourcing.exception;
+  exports com.marmoush.javakit.eventsourcing;
+  exports com.marmoush.javakit.eventsourcing.id;
 }

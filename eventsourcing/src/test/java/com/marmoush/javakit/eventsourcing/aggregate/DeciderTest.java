@@ -1,10 +1,12 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.id.Ids;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
+import com.marmoush.javakit.eventsourcing.Decider;
+import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
+
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.state.StateIds;
+
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
@@ -22,7 +24,7 @@ class DeciderTest {
   @Test
   void decideCreation() {
     // Given
-    var createState = new CreateState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));
+    var createState = new CreateState(new CommandMeta(CommandId.of(0), StateId.of(0)));
 
     // When
     var event = decider.decide(createState).get();
@@ -35,8 +37,8 @@ class DeciderTest {
   @Test
   void decideEvolution() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateIds.of(0)));
-    var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));
+    var someState = new SimpleState(new StateMeta(StateId.of(0)));
+    var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
 
     // When
     var event = decider.decide(someState, changeState).get();
@@ -49,8 +51,8 @@ class DeciderTest {
   @Test
   void decideEvolutionFail() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateIds.of("stateId")));
-    var changeState = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of("differentStateId")));
+    var someState = new SimpleState(new StateMeta(StateId.of("stateId")));
+    var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of("differentStateId")));
 
     // When
     var error = decider.decide(someState, changeState).error();

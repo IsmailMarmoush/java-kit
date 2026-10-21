@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.aggregate.store;
 
 import com.marmoush.javakit.eventsourcing.aggregate.Aggregate;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

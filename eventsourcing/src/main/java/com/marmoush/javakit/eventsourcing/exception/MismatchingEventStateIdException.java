@@ -1,7 +1,7 @@
-package com.marmoush.javakit.eventsourcing.aggregate.exception;
+package com.marmoush.javakit.eventsourcing.exception;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 
 public final class MismatchingEventStateIdException extends IllegalStateException {
   private static final String MESSAGE = "Mismatching Event and state Ids: State(StateId=%s) != Event(StateId=%s)";

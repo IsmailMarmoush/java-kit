@@ -1,19 +1,17 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.core.domain.Result;
-import com.marmoush.javakit.core.id.Id;
-import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
+import com.marmoush.javakit.eventsourcing.error.ESDomainError;
+import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.state.State;
 
 import java.util.function.Supplier;
 
 public interface Decider {
-  Supplier<Id> idSupplier();
-
+  Supplier<EventId> eventIdSupplier();
   Supplier<Long> timeSupplier();
 
   /**
@@ -44,7 +42,7 @@ public interface Decider {
   }
 
   default EventMeta eventMeta(Command command) {
-    return new EventMeta(EventIds.of(idSupplier().get()),
+    return new EventMeta(eventIdSupplier().get(),
                          0,
                          command.meta().stateId(),
                          command.meta().commandId(),
@@ -56,7 +54,7 @@ public interface Decider {
     if (!state.meta().stateId().equals(command.meta().stateId())) {
       return Result.failure(MismatchingCommandStateIdError.of(state.meta().stateId(), command));
     }
-    var eMeta = new EventMeta(EventIds.of(idSupplier().get()),
+    var eMeta = new EventMeta(eventIdSupplier().get(),
                               state.meta().version() + 1,
                               state.meta().stateId(),
                               command.meta().commandId(),

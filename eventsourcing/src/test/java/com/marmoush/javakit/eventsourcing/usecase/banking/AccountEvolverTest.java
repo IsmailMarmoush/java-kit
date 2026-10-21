@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
+
+
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.Debited;
@@ -20,7 +20,7 @@ class AccountEvolverTest {
   void evolve() {
     // Given
     var openAccount = new OpenAccount(new StateMeta(ALICE_ID), ALICE, 500);
-    var debited = new Debited(new EventMeta(EventIds.of(randomUUID()), 1, ALICE_ID, CommandIds.of(randomUUID())),
+    var debited = new Debited(new EventMeta(EventId.of(randomUUID()), 1, ALICE_ID, CommandId.of(randomUUID())),
                               BOB_ID,
                               300);
 

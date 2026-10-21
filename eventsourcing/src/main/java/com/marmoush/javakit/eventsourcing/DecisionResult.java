@@ -1,9 +1,9 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.core.domain.Result;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
-import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.error.ESDomainError;
 import com.marmoush.javakit.eventsourcing.event.Event;
 
 import java.util.Objects;

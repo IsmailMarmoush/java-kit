@@ -1,7 +1,6 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CommandPublisher;
 import com.marmoush.javakit.eventsourcing.event.Event;
 
 import java.util.Optional;

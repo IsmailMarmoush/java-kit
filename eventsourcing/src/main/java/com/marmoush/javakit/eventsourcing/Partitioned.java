@@ -1,13 +1,13 @@
 package com.marmoush.javakit.eventsourcing;
 
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.Id;
 
 public interface Partitioned {
 
   /**
    * @return the partitioning Key
    */
-  StateId pKey();
+  Id pKey();
 
   default boolean isInPartition(int partition, int totalPartitions) {
     return partition == partition(totalPartitions);
@@ -17,7 +17,7 @@ public interface Partitioned {
     return partition(pKey(), totalPartitions);
   }
 
-  static int partition(StateId pKey, int totalPartitions) {
+  static int partition(Id pKey, int totalPartitions) {
     var hash = (pKey.hashCode() == Integer.MIN_VALUE) ? Integer.MAX_VALUE : pKey.hashCode();
     return Math.abs(hash) % totalPartitions;
   }
