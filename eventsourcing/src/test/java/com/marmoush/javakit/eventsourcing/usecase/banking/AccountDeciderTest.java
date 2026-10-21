@@ -22,7 +22,9 @@ class AccountDeciderTest {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(TestData.ALICE_ID), TestData.ALICE, balance);
-    var debit = new Debit(new CommandMeta(CommandIds.of(randomUUID()), TestData.ALICE_ID), TestData.BOB_ID, debitAmount);
+    var debit = new Debit(new CommandMeta(CommandIds.of(randomUUID()), TestData.ALICE_ID),
+                          TestData.BOB_ID,
+                          debitAmount);
 
     // When
     var event = TestData.decider.decide(openAccount, debit).get();
