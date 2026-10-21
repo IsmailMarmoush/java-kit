@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EnvVarsOps {
+  private EnvVarsOps() {}
 
   public static Map<String, String> toMap(Properties props) {
     return Set.copyOf(props.keySet())

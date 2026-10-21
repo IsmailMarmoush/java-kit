@@ -16,7 +16,7 @@ class YamlConfigTest {
   void appConfig() throws IOException, TextException {
     // Given
     var config = new ConfigFile("cases/config/yaml/AppConfigs.yaml").read();
-    System.out.println(config);
+
     // When
     var appConfig = TestUtils.yaml.deserialize(config, AppConfig.class);
 

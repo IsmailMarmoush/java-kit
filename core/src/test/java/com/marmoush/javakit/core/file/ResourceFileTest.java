@@ -13,7 +13,6 @@ class ResourceFileTest {
 
     // When
     var str = FileOps.readResource(path);
-    ;
 
     // Then
     Assertions.assertEquals("hello world\nbye bye", str);

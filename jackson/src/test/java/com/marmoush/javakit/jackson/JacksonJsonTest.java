@@ -7,28 +7,23 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class JacksonJsonTest {
   @Test
   void serializeEngineer() {
     var yamlEngineerJson = TestUtils.json.serialize(Resources.BOB_ENGINEER);
-    assert Resources.BOB_ENGINEER_JSON != null;
-    assertEquals(Resources.BOB_ENGINEER_JSON, yamlEngineerJson);
+    Assertions.assertThat(yamlEngineerJson).isEqualTo(Resources.BOB_ENGINEER_JSON);
   }
 
   @Test
   void serializeManager() {
     var engineerYaml = TestUtils.json.serialize(Resources.ANNIKA_MANAGER);
-    assert Resources.ANNIKA_MANAGER_JSON != null;
-    assertEquals(Resources.ANNIKA_MANAGER_JSON, engineerYaml);
+    Assertions.assertThat(engineerYaml).isEqualTo(Resources.ANNIKA_MANAGER_JSON);
   }
 
   @Test
   void serializeEmployees() {
     var employeesJson = TestUtils.json.serialize(Resources.EMPLOYEES);
-    assert Resources.EMPLOYEES_JSON != null;
-    assertEquals(Resources.EMPLOYEES_JSON, employeesJson);
+    Assertions.assertThat(employeesJson).isEqualTo(Resources.EMPLOYEES_JSON);
   }
 
   @Test
@@ -40,7 +35,7 @@ class JacksonJsonTest {
     // When
     var actualDepartment = TestUtils.json.deserialize(Resources.DEPARTMENT_JSON, Department.class);
     // Then
-    assertEquals(expectedDepartment, actualDepartment);
+    Assertions.assertThat(actualDepartment).isEqualTo(expectedDepartment);
 
   }
 
@@ -49,7 +44,7 @@ class JacksonJsonTest {
     // When
     var engineer = TestUtils.json.deserialize(Resources.BOB_ENGINEER_JSON, Engineer.class);
     // Then
-    assertEquals(Resources.BOB_ENGINEER, engineer);
+    Assertions.assertThat(engineer).isEqualTo(Resources.BOB_ENGINEER);
   }
 
   @Test
@@ -57,8 +52,8 @@ class JacksonJsonTest {
     // When
     var manager = TestUtils.json.deserialize(Resources.ANNIKA_MANAGER_JSON, Manager.class);
     // Then
-    assertEquals(Resources.ANNIKA_MANAGER, manager);
-    assertEquals(List.of(Resources.BOB_ENGINEER, Resources.ALEX_ENGINEER), manager.team());
+    Assertions.assertThat(manager).isEqualTo(Resources.ANNIKA_MANAGER);
+    Assertions.assertThat(manager.team()).isEqualTo(List.of(Resources.BOB_ENGINEER, Resources.ALEX_ENGINEER));
   }
 
   @Test
@@ -66,6 +61,6 @@ class JacksonJsonTest {
     // When
     var employees = TestUtils.json.deserialize(Resources.EMPLOYEES_JSON, Employee[].class);
     // Then
-    Assertions.assertThat(Resources.EMPLOYEES).hasSameElementsAs(Arrays.stream(employees).toList());
+    Assertions.assertThat(employees).hasSameElementsAs(Arrays.stream(Resources.EMPLOYEES).toList());
   }
 }

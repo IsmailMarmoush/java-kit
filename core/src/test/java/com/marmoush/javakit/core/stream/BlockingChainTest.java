@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class BlockingChainTest {
-  private static final int count = 10_000;
+  private static final int COUNT = 10_000;
   private final BlockingChain<Integer> stream = BlockingChain.inMemory();
 
   @Test
@@ -31,7 +31,7 @@ class BlockingChainTest {
   @DisplayName("Stream multiple items are in same order")
   void stream() throws Exception {
     Thread.startVirtualThread(() -> {
-      for (int i = 0; i < count; i++) {
+      for (int i = 0; i < COUNT; i++) {
         stream.append(i);
       }
     });

@@ -14,12 +14,7 @@ class NodeTest {
   @DisplayName("Should block until tail is added")
   void tailBlocking() {
     Thread.startVirtualThread(() -> {
-      //      try {
-      //        Thread.sleep(200);
       node.add(new MemBlockingChain.Node<>("world"));
-      //      } catch (InterruptedException e) {
-      //        throw new RuntimeException(e);
-      //      }
     });
     Awaitility.await().timeout(Duration.ofMillis(250)).until(() -> node.tail().call().head().equals("world"));
   }
