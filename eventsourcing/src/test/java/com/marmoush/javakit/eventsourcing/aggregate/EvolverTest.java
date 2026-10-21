@@ -52,6 +52,7 @@ class EvolverTest {
     var stateChanged = new StateChanged(new EventMeta(EventIds.of(0), 10, StateIds.of(0), CommandIds.of(0)));
 
     // Then
-    assertThatThrownBy(() -> evolver.evolve(someState, stateChanged)).isInstanceOf(MismatchingEventVersionException.class);
+    assertThatThrownBy(() -> evolver.evolve(someState,
+                                            stateChanged)).isInstanceOf(MismatchingEventVersionException.class);
   }
 }

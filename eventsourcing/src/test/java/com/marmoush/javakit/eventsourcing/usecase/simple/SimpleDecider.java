@@ -6,10 +6,10 @@ import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult;
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandTypeException;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 
 import java.util.function.Supplier;
 
