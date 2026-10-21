@@ -21,15 +21,17 @@ class AccountDeciderTest {
   void debit(int debitAmount) {
     // Given
     int balance = 500;
-    var openAccount = new OpenAccount(new StateMeta(TestData.aliceId), TestData.alice, balance);
-    var debit = new Debit(new CommandMeta(CommandIds.of(randomUUID()), TestData.aliceId), TestData.bobId, debitAmount);
+    var openAccount = new OpenAccount(new StateMeta(TestData.ALICE_ID), TestData.ALICE, balance);
+    var debit = new Debit(new CommandMeta(CommandIds.of(randomUUID()), TestData.ALICE_ID),
+                          TestData.BOB_ID,
+                          debitAmount);
 
     // When
     var event = TestData.decider.decide(openAccount, debit).get();
     var accountEvent = (AccountEvent) event;
 
     // Then
-    assertThat(accountEvent.accountId()).isEqualTo(TestData.aliceId);
+    assertThat(accountEvent.accountId()).isEqualTo(TestData.ALICE_ID);
     if (debitAmount < balance) {
       assertThat(event).isInstanceOf(Debited.class);
     } else {

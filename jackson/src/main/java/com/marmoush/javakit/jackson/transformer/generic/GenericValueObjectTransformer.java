@@ -16,7 +16,7 @@ public final class GenericValueObjectTransformer {
 
   public static class GenericValueObjectDeserializer<A, B extends A> extends StdDeserializer<B> {
 
-    private final transient Function<String, B> constructor;
+    private final Function<String, B> constructor;
 
     public GenericValueObjectDeserializer(Class<B> vc, Function<String, B> constructor) {
       super(vc);
@@ -31,7 +31,7 @@ public final class GenericValueObjectTransformer {
 
   public static class GenericValueObjectSerializer<A, B extends A> extends StdSerializer<B> {
 
-    private final transient Function<B, String> valueExtractor;
+    private final Function<B, String> valueExtractor;
 
     public GenericValueObjectSerializer(Class<B> vc, Function<B, String> valueExtractor) {
       super(vc);

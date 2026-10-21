@@ -21,11 +21,11 @@ public class TestData {
   public static final Saga saga = new AccountSaga(idSupplier, timeSupplier);
 
   // Data
-  public static final String alice = "alice";
-  public static StateId aliceId = StateIds.of(alice);
+  public static final String ALICE = "alice";
+  public static final StateId ALICE_ID = StateIds.of(ALICE);
 
-  public static final String bob = "bob";
-  public static StateId bobId = StateIds.of(bob);
+  public static final String BOB = "bob";
+  public static final StateId BOB_ID = StateIds.of(BOB);
 
   private TestData() {}
 }

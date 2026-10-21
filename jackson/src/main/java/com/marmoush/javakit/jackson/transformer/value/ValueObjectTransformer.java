@@ -17,7 +17,7 @@ public final class ValueObjectTransformer {
 
   public static class ValueObjectDeserializer<E, T extends ValueObject<E>> extends StdDeserializer<T> {
 
-    private final transient Function<String, T> constructor;
+    private final Function<String, T> constructor;
 
     public ValueObjectDeserializer(Class<T> vc, Function<String, T> constructor) {
       super(vc);

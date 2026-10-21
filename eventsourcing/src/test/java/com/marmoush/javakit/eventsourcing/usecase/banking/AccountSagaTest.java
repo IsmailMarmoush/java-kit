@@ -15,8 +15,8 @@ class AccountSagaTest {
   @Test
   void evolve() {
     // Given
-    StateId debitedAccount = TestData.aliceId;
-    StateId creditedAcc = TestData.bobId;
+    StateId debitedAccount = TestData.ALICE_ID;
+    StateId creditedAcc = TestData.BOB_ID;
 
     var sagaEventId = EventIds.of("SomeSagaEventId");
     var commandId = CommandIds.of(randomUUID());

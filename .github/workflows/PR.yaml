@@ -3,7 +3,9 @@ name: PR
 on:
   pull_request:
     paths-ignore:
-      - 'README.md'
+      - '**/*.md'
+      - 'docs/**'
+      - '.docs/**'
 
 concurrency:
   group: pr-${{ github.event.pull_request.number }}

@@ -7,10 +7,10 @@ import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent
 import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandTypeException;
+import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.AccountCommand;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ChangeName;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.CloseAccount;

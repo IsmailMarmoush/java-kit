@@ -93,7 +93,7 @@ public class FileOps {
     }
   }
 
-  public static Stream<String> readResourceLines(String path) throws IOException {
+  public static Stream<String> readResourceLines(String path) {
     var inputStream = Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(path));
     return new BufferedReader(new InputStreamReader(inputStream)).lines();
   }

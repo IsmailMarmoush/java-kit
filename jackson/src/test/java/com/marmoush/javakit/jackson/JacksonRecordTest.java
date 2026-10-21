@@ -5,16 +5,14 @@ import com.marmoush.javakit.core.text.TextException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.yaml.YAMLMapper;
 
-import java.io.IOException;
 import java.util.List;
 
-import static com.marmoush.javakit.jackson.Tests.json;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.marmoush.javakit.jackson.TestUtils.json;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A Copy from <a
@@ -24,61 +22,83 @@ class JacksonRecordTest {
 
   private static JsonMapper jsonMapper;
 
-  public String asYaml(String jsonString) throws IOException {
+  public String asYaml(String jsonString) {
     // parse JSON
-    JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
+    var jsonNodeTree = new ObjectMapper().readTree(jsonString);
     // save it as YAML
     return new YAMLMapper().writeValueAsString(jsonNodeTree);
   }
 
   @Test
-  void testDeserializeRecordWithConstructor() throws IOException {
-    RecordWithConstructor value = jsonMapper.readValue("{\"id\":123,\"name\":\"Bob\"}", RecordWithConstructor.class);
+  void testDeserializeRecordWithConstructor() {
+    //given
+    var json = "{\"id\":123,\"name\":\"Bob\"}";
 
-    assertEquals(new RecordWithConstructor(123, "Bob"), value);
+    //when
+    var value = jsonMapper.readValue(json, RecordWithConstructor.class);
+
+    //then
+    assertThat(value).isEqualTo(new RecordWithConstructor(123, "Bob"));
   }
 
   @Test
-  void testDeserializeSimpleRecord() throws IOException {
-    SimpleRecord value = jsonMapper.readValue("{\"id\":123,\"name\":\"Bob\"}", SimpleRecord.class);
+  void testDeserializeSimpleRecord() {
+    //given
+    var json = "{\"id\":123,\"name\":\"Bob\"}";
 
-    assertEquals(new SimpleRecord(123, "Bob"), value);
+    //when
+    var value = jsonMapper.readValue(json, SimpleRecord.class);
+
+    //then
+    assertThat(value).isEqualTo(new SimpleRecord(123, "Bob"));
   }
 
   @Test
   void testSerializeJsonIgnoreRecord() throws JacksonException {
-    JsonIgnoreRecord record = new JsonIgnoreRecord(123, "Bob");
+    //given
+    JsonIgnoreRecord value = new JsonIgnoreRecord(123, "Bob");
 
-    String json = jsonMapper.writeValueAsString(record);
+    //when
+    var json = jsonMapper.writeValueAsString(value);
 
-    assertEquals("{\"id\":123}", json);
+    //then
+    assertThat(json).isEqualTo("{\"id\":123}");
   }
 
   @Test
   void testSerializeRecordOfRecord() throws JacksonException {
-    RecordOfRecord record = new RecordOfRecord(new SimpleRecord(123, "Bob"));
+    //given
+    RecordOfRecord value = new RecordOfRecord(new SimpleRecord(123, "Bob"));
 
-    String json = jsonMapper.writeValueAsString(record);
+    //when
+    var json = jsonMapper.writeValueAsString(value);
 
-    assertEquals("{\"record\":{\"id\":123,\"name\":\"Bob\"}}", json);
+    //then
+    assertThat(json).isEqualTo("{\"record\":{\"id\":123,\"name\":\"Bob\"}}");
   }
 
   @Test
   void testSerializeSimpleRecord() throws JacksonException {
-    SimpleRecord record = new SimpleRecord(123, "Bob");
+    //given
+    SimpleRecord value = new SimpleRecord(123, "Bob");
 
-    String json = jsonMapper.writeValueAsString(record);
+    //when
+    var json = jsonMapper.writeValueAsString(value);
 
-    assertEquals("{\"id\":123,\"name\":\"Bob\"}", json);
+    //then
+    assertThat(json).isEqualTo("{\"id\":123,\"name\":\"Bob\"}");
   }
 
   @Test
   void toList() throws TextException {
-    // When
+    //given
+    var expected = List.of("mercedes", "chevy", "porsche");
+
+    //when
     var list = json.deserialize(Resources.JSON_LIST, String[].class);
-    // Then
-    assert list != null;
-    assertEquals(List.of("mercedes", "chevy", "porsche"), List.of(list));
+
+    //then
+    assertThat(list).containsExactlyElementsOf(expected);
   }
 
   @BeforeAll

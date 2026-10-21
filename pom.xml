@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.marmoush</groupId>
         <artifactId>java-bom</artifactId>
-        <version>27.0.2</version>
+        <version>27.0.3</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
@@ -34,14 +34,19 @@
 
     <properties>
         <sonar.coverage.exclusions>
+            **/config/**,
+            **/dto/**,
+            **/dtos/**,
+            **/generated/**,
+            **/exception/**,
+            **/exceptions/**,
+            **/error/**,
+            **/errors/**,
+            **/testsuite/**,
             **/Main.java,
-            **/exception/*.java,
-            **/exceptions/*.java,
+            **/*Application.java,
             **/*Exception.java,
-            **/error/*.java,
-            **/errors/*.java,
-            **/*Error.java,
-            testsuite/**/*.java,
+            **/*Error.java
         </sonar.coverage.exclusions>
     </properties>
 

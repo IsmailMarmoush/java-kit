@@ -21,9 +21,9 @@ import java.util.stream.Stream;
  * outliers using standard deviation</a>
  */
 public class PartitionedTest {
-  private static final int totalShards = 1000;
-  private static final int minPartitions = 25;
-  private static final int maxPartitions = 75;
+  private static final int TOTAL_SHARDS = 1000;
+  private static final int MIN_PARTITIONS = 25;
+  private static final int MAX_PARTITIONS = 75;
 
   @ParameterizedTest
   @MethodSource("totalPartitions")
@@ -56,7 +56,7 @@ public class PartitionedTest {
   }
 
   public static Stream<Arguments> totalPartitions() {
-    return IntStream.range(minPartitions, maxPartitions).mapToObj(Arguments::of);
+    return IntStream.range(MIN_PARTITIONS, MAX_PARTITIONS).mapToObj(Arguments::of);
   }
 
   private static int getMaxOutliers(int totalPartitions) {
@@ -64,7 +64,7 @@ public class PartitionedTest {
   }
 
   private static List<Partitioned> createShards(Function<Integer, Id> idGen) {
-    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).map(s -> (Partitioned) s).toList();
+    return IntStream.range(0, TOTAL_SHARDS).mapToObj(idGen::apply).map(Shard::new).map(s -> (Partitioned) s).toList();
   }
 
   private static List<Long> partitionSizeList(List<Partitioned> shards, int totalPartitions) {
