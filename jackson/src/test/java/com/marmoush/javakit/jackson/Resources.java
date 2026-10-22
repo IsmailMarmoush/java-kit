@@ -1,7 +1,7 @@
 package com.marmoush.javakit.jackson;
 
 import com.marmoush.javakit.core.file.FileOps;
-import com.marmoush.javakit.core.id.Ids;
+
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -36,8 +36,8 @@ public class Resources {
       BOB_ENGINEER_YAML = FileOps.readResource("cases/company/yaml/Engineer.yaml");
       ANNIKA_MANAGER_YAML = FileOps.readResource("cases/company/yaml/Manager.yaml");
       // Objects
-      BOB_ENGINEER = new Engineer(Ids.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
-      ALEX_ENGINEER = new Engineer(Ids.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
+      BOB_ENGINEER = new Engineer("0", "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
+      ALEX_ENGINEER = new Engineer("1", "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
       ANNIKA_MANAGER = new Manager("Annika", List.of(BOB_ENGINEER, ALEX_ENGINEER));
       EMPLOYEES = new Employee[]{BOB_ENGINEER, ANNIKA_MANAGER};
     } catch (IOException e) {

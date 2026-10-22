@@ -91,13 +91,16 @@ Format Example: `JDK_Version.major.minor`
 * [ ] Increase test coverage to >90%
 * [ ] Publish to maven central instead of Github
 * Event-sourcing 
-  * [ ] Id refactoring
+  * [x] Id refactoring
 * [ ] Performance and benchmarks
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
 
 ### Release notes
 
+* `27.0.1`
+  * Jdk 27
+  * Removal of Id from Jackson
 * `24.4.0`
     * Modular library Using Modules (module-info.java)
     * Handle non-modular dependencies

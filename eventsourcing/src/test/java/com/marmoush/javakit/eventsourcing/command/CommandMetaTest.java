@@ -15,7 +15,7 @@ class CommandMetaTest {
     var commandMeta = new CommandMeta(CommandId.of(0), stateId, 0);
 
     // Then
-    Assertions.assertThat(commandMeta.pKey()).isEqualTo(stateId);
+    Assertions.assertThat(commandMeta.pKey().value()).isEqualTo(stateId.value());
   }
 
   @Test

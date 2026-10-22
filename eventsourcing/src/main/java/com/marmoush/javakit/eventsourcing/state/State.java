@@ -2,6 +2,7 @@ package com.marmoush.javakit.eventsourcing.state;
 
 import com.marmoush.javakit.eventsourcing.Partitioned;
 import com.marmoush.javakit.eventsourcing.id.Id;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.Versioned;
 
@@ -17,7 +18,7 @@ public interface State extends Partitioned, Versioned, Serializable {
     return meta().stateId();
   }
 
-  default @Override Id pKey() {
+  default @Override PartitionId pKey() {
     return meta().pKey();
   }
 

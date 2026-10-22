@@ -1,16 +1,13 @@
 package com.marmoush.javakit.eventsourcing;
 
-
-import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.core.math.MathOps;
-import com.marmoush.javakit.eventsourcing.id.Id;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -30,7 +27,7 @@ public class PartitionedTest {
   @MethodSource("totalPartitions")
   void uuidShardsShouldBeNormal(int totalPartitions) {
     // Given
-    var shards = createShards(_ -> Ids.of(UUID.randomUUID()));
+    var shards = createShards(_ -> PartitionId.randomUUID());
     var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
     int maxOutliers = getMaxOutliers(totalPartitions);
 
@@ -45,7 +42,7 @@ public class PartitionedTest {
   @MethodSource("totalPartitions")
   void longShardsShouldBeNormal(int totalPartitions) {
     // Given
-    var shards = createShards(Ids::of);
+    var shards = createShards(PartitionId::of);
     var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
 
     // When
@@ -64,7 +61,7 @@ public class PartitionedTest {
     return (int) (totalPartitions * 0.1);
   }
 
-  private static List<Partitioned> createShards(Function<Integer, Id> idGen) {
+  private static List<Partitioned> createShards(Function<Integer, PartitionId> idGen) {
     return IntStream.range(0, TOTAL_SHARDS).mapToObj(idGen::apply).map(Shard::new).map(s -> (Partitioned) s).toList();
   }
 
@@ -78,5 +75,5 @@ public class PartitionedTest {
     return shards.stream().filter(sh -> sh.isInPartition(partition, totalPartitions)).count();
   }
 
-  private record Shard(Id pKey) implements Partitioned {}
+  private record Shard(PartitionId pKey) implements Partitioned {}
 }

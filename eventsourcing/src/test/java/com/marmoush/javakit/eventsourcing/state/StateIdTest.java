@@ -1,8 +1,7 @@
 package com.marmoush.javakit.eventsourcing.state;
 
-import com.github.f4b6a3.uuid.UuidCreator;
 
-import com.marmoush.javakit.core.id.Ids;
+import com.marmoush.javakit.eventsourcing.id.Id;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,12 +39,6 @@ class StateIdTest {
   }
 
   @Test
-  void happyPath() {
-    var id = Ids.of(UuidCreator.getTimeOrderedEpoch());
-    Assertions.assertThat(id.value()).isNotEmpty();
-  }
-
-  @Test
   void idEquality() {
     // Given
     var uuid = UUID.randomUUID();
@@ -64,23 +57,6 @@ class StateIdTest {
     String str = null;
     //noinspection ConstantValue
     Assertions.assertThatNullPointerException().isThrownBy(() -> StateId.of(str));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateId.of(-1L));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateId.of(""));
-  }
-
-  @Test
-  void uuidOrdering() {
-    TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(StateId.of(UuidCreator.getTimeOrderedEpoch()), i));
-    var atomic = new AtomicInteger(0);
-    map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
-  }
-
-  @Test
-  void seqIdOrdering() {
-    TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(StateId.of(i), i));
-    var atomic = new AtomicInteger(0);
-    map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
 }

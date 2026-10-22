@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Debit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -11,7 +11,6 @@ import com.marmoush.javakit.eventsourcing.usecase.banking.state.OpenAccount;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AccountDeciderTest {
@@ -22,7 +21,7 @@ class AccountDeciderTest {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(TestData.ALICE_ID), TestData.ALICE, balance);
-    var debit = new Debit(new CommandMeta(CommandId.of(randomUUID()), TestData.ALICE_ID),
+    var debit = new Debit(new CommandMeta(CommandId.randomUUID(), TestData.ALICE_ID),
                           TestData.BOB_ID,
                           debitAmount);
 

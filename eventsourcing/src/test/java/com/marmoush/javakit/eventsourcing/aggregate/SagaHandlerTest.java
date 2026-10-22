@@ -1,18 +1,13 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-
-import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.eventsourcing.Saga;
 import com.marmoush.javakit.eventsourcing.SagaHandler;
 import com.marmoush.javakit.eventsourcing.command.Command;
-
-import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
-
-import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
@@ -61,8 +56,8 @@ class SagaHandlerTest {
   private static Saga sagaReacting(Function<Event, Optional<Command>> reaction) {
     return new Saga() {
       @Override
-      public Supplier<Id> idSupplier() {
-        return () -> Ids.of(0);
+      public Supplier<CommandId> commandIdSupplier() {
+        return () -> CommandId.of(0);
       }
 
       @Override

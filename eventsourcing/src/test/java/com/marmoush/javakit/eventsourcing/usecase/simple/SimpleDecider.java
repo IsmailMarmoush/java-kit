@@ -1,20 +1,19 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-
 import com.marmoush.javakit.eventsourcing.Decider;
 import com.marmoush.javakit.eventsourcing.DecisionResult;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.error.MismatchingCommandError;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledCommandTypeException;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
-import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.state.State;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
-public record SimpleDecider(Supplier<Long> timeSupplier) implements Decider {
+public record SimpleDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> timeSupplier) implements Decider {
   @Override
   public DecisionResult decide(Command command, EventMeta eventMeta) {
     if (command instanceof CreateState) {

@@ -1,9 +1,8 @@
 package com.marmoush.javakit.eventsourcing.event;
 
-import com.github.f4b6a3.uuid.UuidCreator;
 
-import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.id.Id;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,15 +32,10 @@ class EventIdTest {
     EventId id = EventId.of(uuid);
     assertEquals(uuid.toString(), id.value());
   }
+
   @Test
   void checkToString() {
     Assertions.assertThat(new EventId("id")).hasToString("id");
-  }
-
-  @Test
-  void happyPath() {
-    var id = Ids.of(UuidCreator.getTimeOrderedEpoch());
-    Assertions.assertThat(id.value()).isNotEmpty();
   }
 
   @Test
@@ -63,23 +57,6 @@ class EventIdTest {
     String str = null;
     //noinspection ConstantValue
     Assertions.assertThatNullPointerException().isThrownBy(() -> EventId.of(str));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventId.of(-1L));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventId.of(""));
-  }
-
-  @Test
-  void uuidOrdering() {
-    TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(EventId.of(UuidCreator.getTimeOrderedEpoch()), i));
-    var atomic = new AtomicInteger(0);
-    map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
-  }
-
-  @Test
-  void seqIdOrdering() {
-    TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(EventId.of(i), i));
-    var atomic = new AtomicInteger(0);
-    map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
 }

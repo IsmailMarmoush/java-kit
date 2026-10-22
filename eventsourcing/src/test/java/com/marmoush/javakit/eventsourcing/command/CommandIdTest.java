@@ -52,7 +52,6 @@ class CommandIdTest {
     String str = null;
     //noinspection ConstantValue
     Assertions.assertThatNullPointerException().isThrownBy(() -> CommandId.of(str));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandId.of(-1L));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandId.of(""));
   }
 }

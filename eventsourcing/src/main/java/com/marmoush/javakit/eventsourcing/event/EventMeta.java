@@ -5,6 +5,7 @@ import com.marmoush.javakit.eventsourcing.id.Id;
 import com.marmoush.javakit.eventsourcing.Partitioned;
 import com.marmoush.javakit.eventsourcing.Versioned;
 import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 
 import java.io.Serial;
@@ -48,8 +49,8 @@ public class EventMeta implements Partitioned, Versioned, Serializable {
   }
 
   @Override
-  public Id pKey() {
-    return stateId;
+  public PartitionId pKey() {
+    return PartitionId.of(stateId);
   }
 
   public EventId eventId() {return eventId;}

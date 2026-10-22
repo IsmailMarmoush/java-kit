@@ -6,6 +6,7 @@ import com.marmoush.javakit.eventsourcing.Versioned;
 
 import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.id.Id;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public interface Event extends Partitioned, Versioned, Serializable {
     return meta().sagaSource();
   }
 
-  default @Override Id pKey() {
+  default @Override PartitionId pKey() {
     return meta().pKey();
   }
 

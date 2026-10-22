@@ -3,6 +3,7 @@ package com.marmoush.javakit.eventsourcing.command;
 import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.Partitioned;
 import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 
 import java.io.Serial;
@@ -34,8 +35,8 @@ public class CommandMeta implements Partitioned, Serializable {
   }
 
   @Override
-  public StateId pKey() {
-    return stateId;
+  public PartitionId pKey() {
+    return PartitionId.of(stateId);
   }
 
   public CommandId commandId() {return commandId;}

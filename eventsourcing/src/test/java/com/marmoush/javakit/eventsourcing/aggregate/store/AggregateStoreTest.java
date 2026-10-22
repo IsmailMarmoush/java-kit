@@ -31,7 +31,7 @@ class AggregateStoreTest {
   }
 
   private static Stream<StateId> stateIdStream() {
-    return IntStream.range(0, STATES_SIZE).mapToObj(StateIds::of);
+    return IntStream.range(0, STATES_SIZE).mapToObj(StateId::of);
   }
 
   public static Stream<Arguments> stores() {

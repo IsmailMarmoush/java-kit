@@ -1,11 +1,11 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.eventsourcing.Decider;
-import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
-
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-
+import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.id.Id;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DeciderTest {
-  private final Decider decider = new SimpleDecider(() -> Ids.of(0), () -> 0L);
+  private final Decider decider = new SimpleDecider(() -> EventId.of(0), () -> 0L);
 
   @Test
   void decideCreation() {

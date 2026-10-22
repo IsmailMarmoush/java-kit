@@ -1,6 +1,7 @@
 package com.marmoush.javakit.eventsourcing.event;
 
 
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 
@@ -16,7 +17,7 @@ class EventMetaTest {
     var eventMeta = new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0);
 
     // Then
-    Assertions.assertThat(eventMeta.pKey()).isEqualTo(stateId);
+    Assertions.assertThat(eventMeta.pKey().value()).isEqualTo(stateId.value());
   }
 
   @Test

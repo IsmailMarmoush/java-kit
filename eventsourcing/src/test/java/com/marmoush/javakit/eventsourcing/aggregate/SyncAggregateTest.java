@@ -1,16 +1,12 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.core.id.Ids;
+import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.error.DuplicateCommand;
 import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
-
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-
-import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
-
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
@@ -93,7 +89,7 @@ public class SyncAggregateTest {
   }
 
   private static SyncAggregate newAggregate(StateId stateId, EventRepo eventRepo) {
-    var decider = new SimpleDecider(() -> Ids.of(0), () -> 0L);
+    var decider = new SimpleDecider(EventId::randomUUID, () -> 0L);
     return new SyncAggregate(stateId, decider, new SimpleEvolver(), eventRepo);
   }
 
