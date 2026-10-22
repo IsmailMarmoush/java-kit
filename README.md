@@ -36,23 +36,68 @@ The project currently targets JDK `27`.
 
 ## Architecture
 
-* [Documentation directory](.docs)
+The Maven reactor contains three modules:
 
-The Maven reactor currently contains three modules:
+| Module | Purpose |
+| --- | --- |
+| [`core`](core/src/main/java) | Shared domain, file, math, security, stream, text, and utility APIs. |
+| [`eventsourcing`](eventsourcing/src/main/java) | Commands, events, state, aggregate handling, event repositories, and saga integration. |
+| [`jackson`](jackson/src/main/java) | Jackson-based JSON/YAML transformers and value-object serializers. |
 
-* `core` provides shared primitives and utilities, including result/value-object types, file and environment helpers,
-  text transformation interfaces, stream utilities, validation, math, and security helpers.
-* `eventsourcing` provides event-sourcing building blocks: commands, events, states, deciders, evolvers, synchronous
-  aggregates, saga handling, event repositories, and partitioning.
-* `jackson` provides JSON and YAML text transformers and Jackson configuration helpers. Jackson libraries are declared
-  as `provided`, so applications using this module must supply the compatible Jackson dependencies themselves.
+The [`core`](core/src/main/java) module provides reusable building blocks:
+
+* `domain.Result<T, E>` represents either a successful value or an error and supports mapping and flat-mapping.
+* `domain.ValueObject` is the common contract for value objects.
+* `file.ConfigFile` reads resource or filesystem configuration, can include nested files with `#include:`, and supports
+  `${NAME:-default}` interpolation from environment variables and Java system properties.
+* `text.TextTransformer` and related types define text serialization/deserialization contracts.
+* `stream.BlockingChain` exposes an append-only in-memory chain whose fetch stream waits for elements as they arrive.
+* `security`, `math`, and `utils` provide shared hashing/encryption, numeric, and general-purpose helpers.
+
+### Event sourcing
+
+The `eventsourcing` module models a state as a versioned projection of its events. Application code supplies the domain
+rules through:
+
+* A `Decider`, which evaluates a command and returns a `DecisionResult` containing either an event or a domain error.
+* An `Evolver`, which applies an event to produce a state.
+* A `Saga`, which may react to an event by returning a command.
+
+`Command` and `Event` carry metadata that associates them with a `StateId`; commands have a `CommandId`, while events
+also have an `EventId` and state version. The first event for a state has version `0`; later events advance the version.
+Both metadata types include a timestamp and optional `sagaSource`. IDs are distinct value types (`CommandId`,
+`EventId`, and `StateId`) rather than untyped strings.
+
+`Aggregate.create(...)` creates a synchronous aggregate using a decider, evolver, and `EventRepo`. The provided
+`EventRepo.inMemory()` implementation is process-local; applications needing durable storage must provide and configure
+their own persistence integration. `Aggregates` coordinates aggregate lookup through an `AggregateStore`.
+
+`SagaHandler` delegates to a saga and publishes a command when the saga returns one. It uses the supplied
+`CommandPublisher`; transport, retries, and durable delivery are the caller's responsibility.
+
+Commands and events implement `Partitioned`. Their partition key is derived from their state ID, so related messages
+can be assigned consistently to the same partition.
+
+The module provides in-process abstractions and an in-memory repository, not a distributed event store, broker,
+replication protocol, or automatic saga replay service.
+
+### Jackson
+
+The `jackson` module adapts Jackson 3 JSON and YAML mappers to the core `TextTransformer` contract. Use
+`JacksonTransformerBuilder.json()` or `.yaml()`, then configure it before calling `asTextTransformer()`. Builder
+options include default date formatting, duration formatting, pretty output, subtype registration, mix-in type
+formats, and serializers for value objects.
+
+Jackson dependencies are declared as `provided`; consuming applications must add compatible Jackson databind and YAML
+dependencies themselves. See
+[`JacksonTransformerBuilder`](jackson/src/main/java/com/marmoush/javakit/jackson/JacksonTransformerBuilder.java)
+for the configuration API.
 
 ## User Guide
 
 Add the modules your application uses to its Maven dependencies. The published artifacts share the project version:
 
 ```xml
-
 <dependency>
     <groupId>com.marmoush.java-kit</groupId>
     <artifactId>core</artifactId>
@@ -80,8 +125,8 @@ Format Example: `JDK_Version.major.minor`
 
 * [ ] Increase test coverage to >90%
 * [x] Publish to maven central instead of Github
-* Event-sourcing
-    * [x] Id refactoring
+* Event sourcing
+    * [x] ID refactoring
 * [ ] Performance and benchmarks
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
@@ -92,4 +137,3 @@ Format Example: `JDK_Version.major.minor`
     * Targets JDK 27.
     * Includes the `core`, `eventsourcing`, and `jackson` modules.
     * Published to Maven Central.
-
