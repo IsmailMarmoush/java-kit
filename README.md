@@ -27,48 +27,55 @@
 ## Introduction
 
 **Disclaimer:**
-> `atom` is a work in progress utilities not meant for production usage yet, it's a pragmatic learning effort,
-> please feel free to create issues or PRs.
+> java-kit is under active development and its APIs may change. It is a learning effort and is not yet recommended for
+> production use. Contributions and issue reports are welcome.
 
-Atom is an SDK to accelerate development, and it's a constant learning effort.
+java-kit is a collection of reusable Java libraries for application development.
 
-The currently used JDK is `24` and the motivation is to use the latest available JDK.
+The project currently targets JDK `27`.
 
 ## Architecture
 
-* [Documentation directory](/.docs)
+* [Documentation directory](.docs)
 
 ![](.docs/atom.jpg)
 
-* The `core` module
-    * The `core` module consists of and intended to only contain **POJO** utilities, and standard interfaces which are
-      implemented by child modules
-    * Some utilities like for configuration management like `ConfigFileOps`, and `ResourceFileOps` (similar to Typesafe
-      HOCOON
-      library)
-* `sec` module
-    * `sec` for security utilities, e.g encryption, hashing, json web tokens etc. You can check the pom for more details
-      on the libraries it depends on.
-* `text` module
-    * The `text` module is utilities and standardization of text serialization/deserialization, it relies on jackson
-      libraries.
+The Maven reactor currently contains three modules:
+
+* `core` provides shared primitives and utilities, including result/value-object types, file and environment helpers,
+  text transformation interfaces, stream utilities, validation, math, and security helpers.
+* `eventsourcing` provides event-sourcing building blocks: commands, events, states, deciders, evolvers, synchronous
+  aggregates, saga handling, event repositories, and partitioning.
+* `jackson` provides JSON and YAML text transformers and Jackson configuration helpers. Jackson libraries are declared
+  as `provided`, so applications using this module must supply the compatible Jackson dependencies themselves.
 
 ## User Guide
 
-Import in your pom dependencies
+Add the modules your application uses to its Maven dependencies. The published artifacts share the project version:
 
 ```xml
-
 <dependency>
-    <groupId>com.marmoush</groupId>
-    <artifactId>java-kit</artifactId>
+    <groupId>com.marmoush.java-kit</groupId>
+    <artifactId>core</artifactId>
     <version>27.0.1</version>
 </dependency>
 ```
 
+For example, use `eventsourcing` or `jackson` as the artifact ID to add those modules. The `eventsourcing` module
+depends on `core`. The `jackson` module also requires compatible Jackson 3 databind and YAML dependencies on the
+application classpath.
+
+Create a JSON or YAML transformer with the Jackson module:
+
+```java
+var json = JacksonTransformerBuilder.json()
+    .withDefaults()
+    .asTextTransformer();
+```
+
 ### Versioning
 
-The versioning is similar to semantic but with a shift where the first segment being the jdk version.
+The version format is `JDK-version.major.minor`; for example, `27.0.1` targets JDK 27.
 
 Format Example: `JDK_Version.major.minor`
 
@@ -85,8 +92,7 @@ Format Example: `JDK_Version.major.minor`
 ### Release notes
 
 * `27.0.1`
-  * Jdk 27
-  * Removal of Id from Jackson
-  * Published to maven central
-
+  * Targets JDK 27.
+  * Includes the `core`, `eventsourcing`, and `jackson` modules.
+  * Published to Maven Central.
 
