@@ -56,4 +56,4 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        run: mvn --batch-mode -Pcentral,publish deploy -DskipTests
+        run: mvn --batch-mode -Ppublish,central deploy -DskipTests -Dgpg.skip
