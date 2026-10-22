@@ -1,8 +1,12 @@
 package com.marmoush.javakit.eventsourcing.id;
 
+import java.io.Serial;
 import java.util.Objects;
 
 class DefaultId implements Id {
+  @Serial
+  private static final long serialVersionUID = 0L;
+
   private final String value;
 
   public static DefaultId of(String value) {
