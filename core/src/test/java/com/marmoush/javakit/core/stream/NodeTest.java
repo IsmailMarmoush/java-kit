@@ -33,7 +33,8 @@ class NodeTest {
 
     try {
       Assertions.assertThat(started.await(1, TimeUnit.SECONDS)).isTrue();
-      Awaitility.await().atMost(Duration.ofSeconds(1))
+      Awaitility.await()
+                .atMost(Duration.ofSeconds(1))
                 .untilAsserted(() -> Assertions.assertThat(tailReader.getState()).isEqualTo(Thread.State.WAITING));
       Assertions.assertThat(tailResult).isNotCompleted();
       var added = node.add(addedNode);

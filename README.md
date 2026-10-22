@@ -38,11 +38,11 @@ The project currently targets JDK `27`.
 
 The Maven reactor contains three modules:
 
-| Module | Purpose |
-| --- | --- |
-| [`core`](core/src/main/java) | Shared domain, file, math, security, stream, text, and utility APIs. |
+| Module                                         | Purpose                                                                                |
+|------------------------------------------------|----------------------------------------------------------------------------------------|
+| [`core`](core/src/main/java)                   | Shared domain, file, math, security, stream, text, and utility APIs.                   |
 | [`eventsourcing`](eventsourcing/src/main/java) | Commands, events, state, aggregate handling, event repositories, and saga integration. |
-| [`jackson`](jackson/src/main/java) | Jackson-based JSON/YAML transformers and value-object serializers. |
+| [`jackson`](jackson/src/main/java)             | Jackson-based JSON/YAML transformers and value-object serializers.                     |
 
 The [`core`](core/src/main/java) module provides reusable building blocks:
 
@@ -98,6 +98,7 @@ for the configuration API.
 Add the modules your application uses to its Maven dependencies. The published artifacts share the project version:
 
 ```xml
+
 <dependency>
     <groupId>com.marmoush.java-kit</groupId>
     <artifactId>core</artifactId>

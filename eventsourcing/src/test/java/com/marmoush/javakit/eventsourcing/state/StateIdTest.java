@@ -1,31 +1,30 @@
 package com.marmoush.javakit.eventsourcing.state;
 
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class StateIdTest {
   @Test
   void testOfString() {
     StateId id = StateId.of("123");
-    assertEquals("123", id.value());
+    Assertions.assertThat(id.value()).isEqualTo("123");
   }
 
   @Test
   void testOfLong() {
     StateId id = StateId.of(123L);
-    assertEquals("123", id.value());
+    Assertions.assertThat(id.value()).isEqualTo("123");
   }
 
   @Test
   void testOfUUID() {
     UUID uuid = UUID.randomUUID();
     StateId id = StateId.of(uuid);
-    assertEquals(uuid.toString(), id.value());
+    Assertions.assertThat(id.value()).isEqualTo(uuid.toString());
   }
 
   @Test
@@ -53,5 +52,19 @@ class StateIdTest {
     //noinspection ConstantValue
     Assertions.assertThatNullPointerException().isThrownBy(() -> StateId.of(str));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateId.of(""));
+  }
+
+  @Test
+  void convertsIdAndGeneratesRandomUuid() {
+    //given
+    var eventId = EventId.of("event-id");
+
+    //when
+    var converted = StateId.of(eventId);
+    var random = StateId.randomUUID();
+
+    //then
+    Assertions.assertThat(converted.value()).isEqualTo(eventId.value());
+    Assertions.assertThat(UUID.fromString(random.value())).isNotNull();
   }
 }
