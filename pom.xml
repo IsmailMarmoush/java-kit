@@ -14,7 +14,7 @@
     <groupId>com.marmoush</groupId>
     <artifactId>java-kit</artifactId>
     <!--suppress MavenRedundantVersion -->
-    <version>27.0.2-SNAPSHOT</version>
+    <version>27.0.2</version>
     <packaging>pom</packaging>
 
     <!-- Metadata -->
