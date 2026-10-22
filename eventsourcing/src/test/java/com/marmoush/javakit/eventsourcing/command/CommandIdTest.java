@@ -53,5 +53,17 @@ class CommandIdTest {
     //noinspection ConstantValue
     Assertions.assertThatNullPointerException().isThrownBy(() -> CommandId.of(str));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandId.of(""));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandId.of(" \t "));
+  }
+
+  @Test
+  void randomUuidCreatesUuidBackedId() {
+    //given
+
+    //when
+    var id = CommandId.randomUUID();
+
+    //then
+    Assertions.assertThat(UUID.fromString(id.value())).isNotNull();
   }
 }

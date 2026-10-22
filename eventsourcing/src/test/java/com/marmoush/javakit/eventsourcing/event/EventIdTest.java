@@ -53,5 +53,17 @@ class EventIdTest {
     //noinspection ConstantValue
     Assertions.assertThatNullPointerException().isThrownBy(() -> EventId.of(str));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventId.of(""));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventId.of("\n\t"));
+  }
+
+  @Test
+  void randomUuidCreatesUuidBackedId() {
+    //given
+
+    //when
+    var id = EventId.randomUUID();
+
+    //then
+    Assertions.assertThat(UUID.fromString(id.value())).isNotNull();
   }
 }
