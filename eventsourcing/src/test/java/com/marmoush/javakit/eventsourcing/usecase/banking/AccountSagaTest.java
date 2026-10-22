@@ -1,15 +1,13 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Credit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.Debited;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static java.util.UUID.randomUUID;
 
 class AccountSagaTest {
   @Test
@@ -18,9 +16,9 @@ class AccountSagaTest {
     StateId debitedAccount = TestData.ALICE_ID;
     StateId creditedAcc = TestData.BOB_ID;
 
-    var sagaEventId = EventIds.of("SomeSagaEventId");
-    var commandId = CommandIds.of(randomUUID());
-    var eventId = EventIds.of(randomUUID());
+    var sagaEventId = EventId.of("SomeSagaEventId");
+    var commandId = CommandId.randomUUID();
+    var eventId = EventId.randomUUID();
     var eventMetaWithSaga = new EventMeta(eventId, 1, debitedAccount, commandId, 0, sagaEventId);
 
     var debited = new Debited(eventMetaWithSaga, creditedAcc, 300);

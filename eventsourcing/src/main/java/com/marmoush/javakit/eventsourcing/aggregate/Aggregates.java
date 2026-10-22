@@ -1,8 +1,9 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
+import com.marmoush.javakit.eventsourcing.DecisionResult;
 import com.marmoush.javakit.eventsourcing.aggregate.store.AggregateStore;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 
 public class Aggregates {
   private final AggregateStore aggregateStore;

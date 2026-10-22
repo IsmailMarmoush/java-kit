@@ -3,13 +3,9 @@ package com.marmoush.javakit.jackson;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.marmoush.javakit.core.domain.ValueObject;
-import com.marmoush.javakit.core.id.Id;
-import com.marmoush.javakit.core.id.Ids;
 import com.marmoush.javakit.core.text.TextTransformer;
 import com.marmoush.javakit.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectDeserializer;
 import com.marmoush.javakit.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectSerializer;
-import com.marmoush.javakit.jackson.transformer.id.IdTransformer.IdDeserializer;
-import com.marmoush.javakit.jackson.transformer.id.IdTransformer.IdSerializer;
 import com.marmoush.javakit.jackson.transformer.value.ValueObjectTransformer.ValueObjectDeserializer;
 import com.marmoush.javakit.jackson.transformer.value.ValueObjectTransformer.ValueObjectSerializer;
 import tools.jackson.core.util.DefaultIndenter;
@@ -52,7 +48,7 @@ public final class JacksonTransformerBuilder {
 
   /** Basic settings: withDefaultDateFormat().withDurationAsTimestamp().withIdModule() */
   public JacksonTransformerBuilder withDefaults() {
-    return withDefaultDateFormat().withDurationAsTimestamp().withIdModule();
+    return withDefaultDateFormat().withDurationAsTimestamp();
   }
 
   public JacksonTransformerBuilder withPrettyFormat() {
@@ -71,13 +67,6 @@ public final class JacksonTransformerBuilder {
 
   public JacksonTransformerBuilder withDurationAsTimestamp() {
     builder.disable(DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
-    return this;
-  }
-
-  public JacksonTransformerBuilder withIdModule() {
-    var module = new SimpleModule().addSerializer(Id.class, new IdSerializer<>(Id.class))
-                                   .addDeserializer(Id.class, new IdDeserializer<>(Id.class, Ids::of));
-    builder.addModule(module);
     return this;
   }
 
@@ -105,13 +94,6 @@ public final class JacksonTransformerBuilder {
       builder.addMixIn(cls, WrapperObjectByClassName.class);
     }
     return this;
-  }
-
-  public <T extends Id> JacksonTransformerBuilder withSubIdValueObjectsModule(Class<T> tClass,
-                                                                              Function<String, T> fromString) {
-    var module = new SimpleModule().addDeserializer(tClass, new IdDeserializer<>(tClass, fromString))
-                                   .addSerializer(tClass, new IdSerializer<>(tClass));
-    return withModules(module);
   }
 
   public <E, T extends ValueObject<E>> JacksonTransformerBuilder withValueObjectsModule(Class<T> tClass,

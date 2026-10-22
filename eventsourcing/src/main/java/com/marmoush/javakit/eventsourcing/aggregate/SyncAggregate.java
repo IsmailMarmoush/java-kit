@@ -1,17 +1,20 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.aggregate.error.DuplicateCommand;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandStateIdError;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventStateIdException;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.MismatchingEventVersionException;
+import com.marmoush.javakit.eventsourcing.Decider;
+import com.marmoush.javakit.eventsourcing.DecisionResult;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.Evolver;
+import com.marmoush.javakit.eventsourcing.error.DuplicateCommand;
+import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingEventStateIdException;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingEventVersionException;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

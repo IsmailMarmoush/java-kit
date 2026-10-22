@@ -1,8 +1,9 @@
 package com.marmoush.javakit.eventsourcing.state;
 
-import com.marmoush.javakit.core.domain.Partitioned;
-import com.marmoush.javakit.core.domain.Versioned;
-import com.marmoush.javakit.core.id.Id;
+import com.marmoush.javakit.eventsourcing.Partitioned;
+import com.marmoush.javakit.eventsourcing.Versioned;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 
 import java.io.Serializable;
 
@@ -18,8 +19,8 @@ public record StateMeta(StateId stateId, long version) implements Partitioned, V
   }
 
   @Override
-  public Id pKey() {
-    return stateId;
+  public PartitionId pKey() {
+    return PartitionId.of(stateId);
   }
 
   public StateMeta incrementVersion() {

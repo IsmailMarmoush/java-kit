@@ -55,28 +55,14 @@ The currently used JDK is `24` and the motivation is to use the latest available
 
 ## User Guide
 
-First make sure you can fetch repositories under from github
-
-* TODO publishing maven central
-
-```xml
-
-<repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/ismailmarmoush/java-kit</url>
-    </repository>
-</repositories>
-```
-
-Then import in your pom dependencies
+Import in your pom dependencies
 
 ```xml
 
 <dependency>
     <groupId>com.marmoush</groupId>
     <artifactId>java-kit</artifactId>
-    <version>26.0.0</version>
+    <version>27.0.1</version>
 </dependency>
 ```
 
@@ -89,30 +75,18 @@ Format Example: `JDK_Version.major.minor`
 ## Developer Guide
 
 * [ ] Increase test coverage to >90%
-* [ ] Publish to maven central instead of Github
+* [x] Publish to maven central instead of Github
 * Event-sourcing 
-  * [ ] Id refactoring
+  * [x] Id refactoring
 * [ ] Performance and benchmarks
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
 
 ### Release notes
 
-* `24.4.0`
-    * Modular library Using Modules (module-info.java)
-    * Handle non-modular dependencies
-* `24.3.0`
-    * Removed web module
-* `24.0.0`
-    * JDK upgrade
-    * Rebase on latest JBOM
-* `22.0.0`
-    * Sync Aggregates
-    * Merging with Active/Reactive libs
-    * Removing Unnecessary modules (etcd)
-* `21.20.0`
-    * Removed reliance on vavr
-* `21.1.0`
-    * Moving Event-sourcing and testsuite modules to reactive
+* `27.0.1`
+  * Jdk 27
+  * Removal of Id from Jackson
+  * Published to maven central
 
 

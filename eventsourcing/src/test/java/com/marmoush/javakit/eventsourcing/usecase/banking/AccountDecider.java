@@ -1,15 +1,15 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.core.id.Id;
-import com.marmoush.javakit.eventsourcing.aggregate.Decider;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
-import com.marmoush.javakit.eventsourcing.aggregate.error.MismatchingCommandError;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledCommandTypeException;
-import com.marmoush.javakit.eventsourcing.aggregate.exception.UnhandledStateTypeException;
+import com.marmoush.javakit.eventsourcing.Decider;
+import com.marmoush.javakit.eventsourcing.DecisionResult;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.command.Command;
+import com.marmoush.javakit.eventsourcing.error.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.exception.UnhandledCommandTypeException;
+import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.AccountCommand;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ChangeName;
@@ -33,7 +33,7 @@ import com.marmoush.javakit.eventsourcing.usecase.banking.state.OpenAccount;
 
 import java.util.function.Supplier;
 
-public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
+public record AccountDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
   public DecisionResult decide(Command command, EventMeta eventMeta) {

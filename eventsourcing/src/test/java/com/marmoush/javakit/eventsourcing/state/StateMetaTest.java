@@ -1,10 +1,11 @@
 package com.marmoush.javakit.eventsourcing.state;
 
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class StateMetaTest {
-  private final StateId stateId = StateIds.of(0);
+  private final StateId stateId = StateId.of(0);
 
   @Test
   void init() {
@@ -13,7 +14,7 @@ class StateMetaTest {
     var stateMeta2 = new StateMeta(stateId);
 
     // Then
-    Assertions.assertThat(stateMeta1.pKey()).isEqualTo(stateId);
+    Assertions.assertThat(stateMeta1.pKey().value()).isEqualTo(stateId.value());
     Assertions.assertThat(stateMeta1).isEqualTo(stateMeta2);
     Assertions.assertThat(stateMeta1.incrementVersion()).isEqualTo(stateMeta2.incrementVersion());
     Assertions.assertThat(stateMeta1.incrementVersion().version()).isEqualTo(1);

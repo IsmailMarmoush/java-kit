@@ -1,14 +1,14 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.core.id.Id;
-import com.marmoush.javakit.core.id.Ids;
+import com.marmoush.javakit.eventsourcing.Saga;
+import com.marmoush.javakit.eventsourcing.SagaHandler;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.state.StateIds;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
@@ -22,12 +22,12 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SagaHandlerTest {
-  private final Event event = new StateCreated(new EventMeta(EventIds.of(0), 0, StateIds.of(0), CommandIds.of(0)));
+  private final Event event = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0)));
 
   @Test
   void publishesAndReturnsCommandProducedBySaga() {
     // Given
-    Command command = new ChangeState(new CommandMeta(CommandIds.of(0), StateIds.of(0)));
+    Command command = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
     List<Command> publishedCommands = new ArrayList<>();
     var handler = new SagaHandler(sagaReacting(ignored -> Optional.of(command)), publishedCommands::add);
 
@@ -56,8 +56,8 @@ class SagaHandlerTest {
   private static Saga sagaReacting(Function<Event, Optional<Command>> reaction) {
     return new Saga() {
       @Override
-      public Supplier<Id> idSupplier() {
-        return () -> Ids.of(0);
+      public Supplier<CommandId> commandIdSupplier() {
+        return () -> CommandId.of(0);
       }
 
       @Override

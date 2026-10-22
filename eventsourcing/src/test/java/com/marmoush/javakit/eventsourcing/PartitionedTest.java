@@ -1,0 +1,79 @@
+package com.marmoush.javakit.eventsourcing;
+
+import com.marmoush.javakit.core.math.MathOps;
+import com.marmoush.javakit.eventsourcing.id.PartitionId;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+/**
+ * Using Standard deviation to see if there's max of 10% outliers or sharding distribution
+ *
+ * @see <a href="https://study.com/skill/learn/determining-outliers-using-standard-deviation-explanation.html">Determine
+ * outliers using standard deviation</a>
+ */
+public class PartitionedTest {
+  private static final int TOTAL_SHARDS = 1000;
+  private static final int MIN_PARTITIONS = 25;
+  private static final int MAX_PARTITIONS = 75;
+
+  @ParameterizedTest
+  @MethodSource("totalPartitions")
+  void uuidShardsShouldBeNormal(int totalPartitions) {
+    // Given
+    var shards = createShards(_ -> PartitionId.randomUUID());
+    var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
+    int maxOutliers = getMaxOutliers(totalPartitions);
+
+    // When
+    var outliers = MathOps.findStdDevOutliers(partitionSizeList);
+
+    // Then
+    Assertions.assertThat(outliers).size().isLessThanOrEqualTo(maxOutliers);
+  }
+
+  @ParameterizedTest
+  @MethodSource("totalPartitions")
+  void longShardsShouldBeNormal(int totalPartitions) {
+    // Given
+    var shards = createShards(PartitionId::of);
+    var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
+
+    // When
+    var outliers = MathOps.findStdDevOutliers(partitionSizeList);
+
+    // Then
+    var maxOutliers = getMaxOutliers(totalPartitions);
+    Assertions.assertThat(outliers).size().isLessThanOrEqualTo(maxOutliers);
+  }
+
+  public static Stream<Arguments> totalPartitions() {
+    return IntStream.range(MIN_PARTITIONS, MAX_PARTITIONS).mapToObj(Arguments::of);
+  }
+
+  private static int getMaxOutliers(int totalPartitions) {
+    return (int) (totalPartitions * 0.1);
+  }
+
+  private static List<Partitioned> createShards(Function<Integer, PartitionId> idGen) {
+    return IntStream.range(0, TOTAL_SHARDS).mapToObj(idGen::apply).map(Shard::new).map(s -> (Partitioned) s).toList();
+  }
+
+  private static List<Long> partitionSizeList(List<Partitioned> shards, int totalPartitions) {
+    return IntStream.range(0, totalPartitions)
+                    .mapToObj(partition -> isInPartition(shards, partition, totalPartitions))
+                    .toList();
+  }
+
+  private static long isInPartition(List<Partitioned> shards, int partition, int totalPartitions) {
+    return shards.stream().filter(sh -> sh.isInPartition(partition, totalPartitions)).count();
+  }
+
+  private record Shard(PartitionId pKey) implements Partitioned {}
+}

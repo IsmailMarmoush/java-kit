@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking.state;
 
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.id.StateId;
 
 public sealed interface Account extends State permits OpenAccount, ClosedAccount {
   default StateId accountId() {

@@ -1,9 +1,9 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.core.id.Id;
-import com.marmoush.javakit.eventsourcing.aggregate.Saga;
+import com.marmoush.javakit.eventsourcing.Saga;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.Event;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ConfirmDebit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Credit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -14,7 +14,7 @@ import com.marmoush.javakit.eventsourcing.usecase.banking.event.Debited;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Saga {
+public record AccountSaga(Supplier<CommandId> commandIdSupplier, Supplier<Long> timeSupplier) implements Saga {
 
   @Override
   public Optional<Command> react(Event event) {

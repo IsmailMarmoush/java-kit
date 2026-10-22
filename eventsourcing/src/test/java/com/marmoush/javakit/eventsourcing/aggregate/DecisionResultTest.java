@@ -1,14 +1,18 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.core.domain.Result;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.aggregate.DecisionResult.DecisionFailure;
-import com.marmoush.javakit.eventsourcing.aggregate.error.ESDomainError;
-import com.marmoush.javakit.eventsourcing.command.CommandIds;
+import com.marmoush.javakit.eventsourcing.DecisionResult;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.error.ESDomainError;
+
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.EventIds;
+
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.state.StateIds;
+
+import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 class DecisionResultTest {
-  private final Event event = new StateCreated(new EventMeta(EventIds.of(0), 0, StateIds.of(0), CommandIds.of(0), 0));
+  private final Event event = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0), 0));
   private final ESDomainError error = () -> "Rejected";
 
   @Test
