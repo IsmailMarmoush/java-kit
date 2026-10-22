@@ -55,28 +55,14 @@ The currently used JDK is `24` and the motivation is to use the latest available
 
 ## User Guide
 
-First make sure you can fetch repositories under from github
-
-* TODO publishing maven central
-
-```xml
-
-<repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/ismailmarmoush/java-kit</url>
-    </repository>
-</repositories>
-```
-
-Then import in your pom dependencies
+Import in your pom dependencies
 
 ```xml
 
 <dependency>
     <groupId>com.marmoush</groupId>
     <artifactId>java-kit</artifactId>
-    <version>26.0.0</version>
+    <version>27.0.1</version>
 </dependency>
 ```
 
