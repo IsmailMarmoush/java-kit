@@ -2,9 +2,9 @@ package com.marmoush.javakit.jackson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marmoush.javakit.core.text.TextException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.assertj.core.api.Assertions;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -74,7 +74,7 @@ class JacksonRecordTest {
     var json = jsonMapper.writeValueAsString(value);
 
     //then
-    Assertions.assertThat(json).isEqualTo("{\"record\":{\"id\":123,\"name\":\"Bob\"}}");
+    Assertions.assertThat(json).isEqualTo("{\"simpleRecord\":{\"id\":123,\"name\":\"Bob\"}}");
   }
 
   @Test

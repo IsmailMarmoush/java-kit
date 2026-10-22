@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class YamlConfigTest {
   @Test
   @DisplayName("App config nested values should be deserialized correctly")
