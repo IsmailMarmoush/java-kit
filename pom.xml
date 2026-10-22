@@ -140,16 +140,10 @@
     </pluginRepositories>
 
     <distributionManagement>
-        <repository>
+        <snapshotRepository>
             <id>central</id>
-            <url>https://central.sonatype.com/api/v1/publisher</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <licenses>

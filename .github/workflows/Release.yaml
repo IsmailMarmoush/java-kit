@@ -56,10 +56,4 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        run: |
-          VERSION=$(mvn -q -B -Dexpression=project.version -DforceStdout help:evaluate)
-          if [[ "$VERSION" == *-SNAPSHOT ]]; then
-            mvn --batch-mode -Ppublish deploy -DskipTests
-          else
-            mvn --batch-mode -Pcentral,publish deploy -DskipTests
-          fi
+        run: mvn --batch-mode -Pcentral,publish deploy -DskipTests
