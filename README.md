@@ -38,8 +38,6 @@ The project currently targets JDK `27`.
 
 * [Documentation directory](.docs)
 
-![](.docs/atom.jpg)
-
 The Maven reactor currently contains three modules:
 
 * `core` provides shared primitives and utilities, including result/value-object types, file and environment helpers,
