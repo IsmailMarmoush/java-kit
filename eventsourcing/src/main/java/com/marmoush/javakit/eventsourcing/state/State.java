@@ -1,11 +1,9 @@
 package com.marmoush.javakit.eventsourcing.state;
 
 import com.marmoush.javakit.eventsourcing.Partitioned;
-import com.marmoush.javakit.eventsourcing.id.Id;
+import com.marmoush.javakit.eventsourcing.Versioned;
 import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
-import com.marmoush.javakit.eventsourcing.Versioned;
-
 
 import java.io.Serializable;
 

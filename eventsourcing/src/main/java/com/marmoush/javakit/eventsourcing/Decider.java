@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 public interface Decider {
   Supplier<EventId> eventIdSupplier();
+
   Supplier<Long> timeSupplier();
 
   /**

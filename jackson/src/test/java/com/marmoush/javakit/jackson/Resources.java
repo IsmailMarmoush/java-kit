@@ -2,7 +2,6 @@ package com.marmoush.javakit.jackson;
 
 import com.marmoush.javakit.core.file.FileOps;
 
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;

@@ -1,11 +1,9 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.eventsourcing.aggregate.store.AggregateStore;
-
-import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
+import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
-
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Named;

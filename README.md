@@ -54,6 +54,7 @@ The Maven reactor currently contains three modules:
 Add the modules your application uses to its Maven dependencies. The published artifacts share the project version:
 
 ```xml
+
 <dependency>
     <groupId>com.marmoush.java-kit</groupId>
     <artifactId>core</artifactId>
@@ -68,9 +69,7 @@ application classpath.
 Create a JSON or YAML transformer with the Jackson module:
 
 ```java
-var json = JacksonTransformerBuilder.json()
-    .withDefaults()
-    .asTextTransformer();
+var json = JacksonTransformerBuilder.json().withDefaults().asTextTransformer();
 ```
 
 ### Versioning
@@ -83,8 +82,8 @@ Format Example: `JDK_Version.major.minor`
 
 * [ ] Increase test coverage to >90%
 * [x] Publish to maven central instead of Github
-* Event-sourcing 
-  * [x] Id refactoring
+* Event-sourcing
+    * [x] Id refactoring
 * [ ] Performance and benchmarks
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
@@ -92,7 +91,7 @@ Format Example: `JDK_Version.major.minor`
 ### Release notes
 
 * `27.0.1`
-  * Targets JDK 27.
-  * Includes the `core`, `eventsourcing`, and `jackson` modules.
-  * Published to Maven Central.
+    * Targets JDK 27.
+    * Includes the `core`, `eventsourcing`, and `jackson` modules.
+    * Published to Maven Central.
 

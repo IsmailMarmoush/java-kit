@@ -17,7 +17,7 @@ import java.util.function.Function;
  *       list is valid and means "accepted, nothing changed" (e.g. an idempotent command).
  *   <li>{@link DecisionFailure}: a business rule refused the command; carries the {@link ESDomainError}.
  * </ul>
- *
+ * <p>
  * Infrastructure and concurrency failures are not modelled here; they stay exceptions.
  */
 public sealed interface DecisionResult permits DecisionEvent, DecisionFailure {

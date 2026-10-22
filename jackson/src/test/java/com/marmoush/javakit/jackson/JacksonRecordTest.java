@@ -108,7 +108,7 @@ class JacksonRecordTest {
 
   record JsonIgnoreRecord(int id, @JsonIgnore String name) {}
 
-  record RecordOfRecord(SimpleRecord record) {}
+  record RecordOfRecord(SimpleRecord simpleRecord) {}
 
   record RecordWithConstructor(int id, String name) {}
 

@@ -1,6 +1,5 @@
 package com.marmoush.javakit.eventsourcing.event;
 
-
 import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.id.StateId;

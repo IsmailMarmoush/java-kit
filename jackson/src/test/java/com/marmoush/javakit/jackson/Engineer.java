@@ -1,7 +1,5 @@
 package com.marmoush.javakit.jackson;
 
-
-
 import java.time.LocalDate;
 import java.util.List;
 

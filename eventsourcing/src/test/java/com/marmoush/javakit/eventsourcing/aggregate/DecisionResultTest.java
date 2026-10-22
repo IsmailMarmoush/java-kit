@@ -5,13 +5,10 @@ import com.marmoush.javakit.eventsourcing.DecisionResult;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.error.ESDomainError;
-
-import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.event.Event;
-
-import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-
+import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
