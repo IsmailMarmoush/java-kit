@@ -2,6 +2,7 @@ package com.marmoush.javakit.jackson;
 
 import com.marmoush.javakit.core.file.ConfigFile;
 import com.marmoush.javakit.core.text.TextException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +22,8 @@ class YamlConfigTest {
     var appConfig = TestUtils.yaml.deserialize(config, AppConfig.class);
 
     // Then
-    assert appConfig != null;
-    assertEquals("hello world", appConfig.subName());
-    assertEquals(List.of("hi", "hello", "bye"), appConfig.subList());
+    Assertions.assertThat(appConfig).isNotNull();
+    Assertions.assertThat(appConfig.subName()).isEqualTo("hello world");
+    Assertions.assertThat(appConfig.subList()).isEqualTo(List.of("hi", "hello", "bye"));
   }
 }

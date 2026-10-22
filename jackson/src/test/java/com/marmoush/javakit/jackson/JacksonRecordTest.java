@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marmoush.javakit.core.text.TextException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -12,7 +13,6 @@ import tools.jackson.dataformat.yaml.YAMLMapper;
 import java.util.List;
 
 import static com.marmoush.javakit.jackson.TestUtils.json;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A Copy from <a
@@ -38,7 +38,7 @@ class JacksonRecordTest {
     var value = jsonMapper.readValue(json, RecordWithConstructor.class);
 
     //then
-    assertThat(value).isEqualTo(new RecordWithConstructor(123, "Bob"));
+    Assertions.assertThat(value).isEqualTo(new RecordWithConstructor(123, "Bob"));
   }
 
   @Test
@@ -50,7 +50,7 @@ class JacksonRecordTest {
     var value = jsonMapper.readValue(json, SimpleRecord.class);
 
     //then
-    assertThat(value).isEqualTo(new SimpleRecord(123, "Bob"));
+    Assertions.assertThat(value).isEqualTo(new SimpleRecord(123, "Bob"));
   }
 
   @Test
@@ -62,7 +62,7 @@ class JacksonRecordTest {
     var json = jsonMapper.writeValueAsString(value);
 
     //then
-    assertThat(json).isEqualTo("{\"id\":123}");
+    Assertions.assertThat(json).isEqualTo("{\"id\":123}");
   }
 
   @Test
@@ -74,7 +74,7 @@ class JacksonRecordTest {
     var json = jsonMapper.writeValueAsString(value);
 
     //then
-    assertThat(json).isEqualTo("{\"record\":{\"id\":123,\"name\":\"Bob\"}}");
+    Assertions.assertThat(json).isEqualTo("{\"record\":{\"id\":123,\"name\":\"Bob\"}}");
   }
 
   @Test
@@ -86,7 +86,7 @@ class JacksonRecordTest {
     var json = jsonMapper.writeValueAsString(value);
 
     //then
-    assertThat(json).isEqualTo("{\"id\":123,\"name\":\"Bob\"}");
+    Assertions.assertThat(json).isEqualTo("{\"id\":123,\"name\":\"Bob\"}");
   }
 
   @Test
@@ -98,7 +98,7 @@ class JacksonRecordTest {
     var list = json.deserialize(Resources.JSON_LIST, String[].class);
 
     //then
-    assertThat(list).containsExactlyElementsOf(expected);
+    Assertions.assertThat(list).containsExactlyElementsOf(expected);
   }
 
   @BeforeAll
