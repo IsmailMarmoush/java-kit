@@ -89,7 +89,7 @@ Format Example: `JDK_Version.major.minor`
 ## Developer Guide
 
 * [ ] Increase test coverage to >90%
-* [ ] Publish to maven central instead of Github
+* [x] Publish to maven central instead of Github
 * Event-sourcing 
   * [x] Id refactoring
 * [ ] Performance and benchmarks
@@ -101,21 +101,6 @@ Format Example: `JDK_Version.major.minor`
 * `27.0.1`
   * Jdk 27
   * Removal of Id from Jackson
-* `24.4.0`
-    * Modular library Using Modules (module-info.java)
-    * Handle non-modular dependencies
-* `24.3.0`
-    * Removed web module
-* `24.0.0`
-    * JDK upgrade
-    * Rebase on latest JBOM
-* `22.0.0`
-    * Sync Aggregates
-    * Merging with Active/Reactive libs
-    * Removing Unnecessary modules (etcd)
-* `21.20.0`
-    * Removed reliance on vavr
-* `21.1.0`
-    * Moving Event-sourcing and testsuite modules to reactive
+  * Published to maven central
 
 
