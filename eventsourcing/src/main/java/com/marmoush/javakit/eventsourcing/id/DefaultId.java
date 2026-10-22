@@ -9,10 +9,6 @@ class DefaultId implements Id {
 
   private final String value;
 
-  public static DefaultId of(String value) {
-    return new DefaultId(value);
-  }
-
   DefaultId(String value) {
     Objects.requireNonNull(value);
     if (value.isBlank()) {

@@ -7,6 +7,6 @@ public interface Id extends Serializable {
   String value();
 
   static Id randomUUID() {
-    return DefaultId.of(UUID.randomUUID().toString());
+    return new DefaultId(UUID.randomUUID().toString());
   }
 }
