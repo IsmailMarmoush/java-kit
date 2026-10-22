@@ -139,13 +139,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>central</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
