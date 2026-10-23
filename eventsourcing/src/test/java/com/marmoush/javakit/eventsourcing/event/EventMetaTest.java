@@ -78,18 +78,13 @@ class EventMetaTest {
 
     //then
     Assertions.assertThat(sameValue).isTrue();
-    Assertions.assertThat(meta).hasSameHashCodeAs(same);
     Assertions.assertThat(meta)
-              .isNotEqualTo(new EventMeta(EventId.of(9), 2, stateId, CommandId.of(3), 4L, EventId.of(5)));
-    Assertions.assertThat(meta)
-              .isNotEqualTo(new EventMeta(EventId.of(1), 8, stateId, CommandId.of(3), 4L, EventId.of(5)));
-    Assertions.assertThat(meta)
-              .isNotEqualTo(new EventMeta(EventId.of(1), 2, StateId.of(1), CommandId.of(3), 4L, EventId.of(5)));
-    Assertions.assertThat(meta)
-              .isNotEqualTo(new EventMeta(EventId.of(1), 2, stateId, CommandId.of(9), 4L, EventId.of(5)));
-    Assertions.assertThat(meta)
-              .isNotEqualTo(new EventMeta(EventId.of(1), 2, stateId, CommandId.of(3), 9L, EventId.of(5)));
-    Assertions.assertThat(meta)
+              .hasSameHashCodeAs(same)
+              .isNotEqualTo(new EventMeta(EventId.of(9), 2, stateId, CommandId.of(3), 4L, EventId.of(5)))
+              .isNotEqualTo(new EventMeta(EventId.of(1), 8, stateId, CommandId.of(3), 4L, EventId.of(5)))
+              .isNotEqualTo(new EventMeta(EventId.of(1), 2, StateId.of(1), CommandId.of(3), 4L, EventId.of(5)))
+              .isNotEqualTo(new EventMeta(EventId.of(1), 2, stateId, CommandId.of(9), 4L, EventId.of(5)))
+              .isNotEqualTo(new EventMeta(EventId.of(1), 2, stateId, CommandId.of(3), 9L, EventId.of(5)))
               .isNotEqualTo(new EventMeta(EventId.of(1), 2, stateId, CommandId.of(3), 4L, EventId.of(9)));
   }
 

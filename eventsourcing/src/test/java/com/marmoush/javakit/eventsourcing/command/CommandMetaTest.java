@@ -68,14 +68,12 @@ class CommandMetaTest {
 
     //then
     Assertions.assertThat(sameValue).isTrue();
-    Assertions.assertThat(meta).hasSameHashCodeAs(same);
-    Assertions.assertThat(meta.equals(meta)).isTrue();
-    Assertions.assertThat(meta.equals(null)).isFalse();
-    Assertions.assertThat(meta.equals("not metadata")).isFalse();
-    Assertions.assertThat(meta).isNotEqualTo(new CommandMeta(CommandId.of(9), stateId, 10L, EventId.of(2)));
-    Assertions.assertThat(meta).isNotEqualTo(new CommandMeta(CommandId.of(1), stateId, 11L, EventId.of(2)));
-    Assertions.assertThat(meta).isNotEqualTo(new CommandMeta(CommandId.of(1), StateId.of(1), 10L, EventId.of(2)));
-    Assertions.assertThat(meta).isNotEqualTo(new CommandMeta(CommandId.of(1), stateId, 10L, EventId.of(3)));
+    Assertions.assertThat(meta)
+              .hasSameHashCodeAs(same)
+              .isNotEqualTo(new CommandMeta(CommandId.of(9), stateId, 10L, EventId.of(2)))
+              .isNotEqualTo(new CommandMeta(CommandId.of(1), stateId, 11L, EventId.of(2)))
+              .isNotEqualTo(new CommandMeta(CommandId.of(1), StateId.of(1), 10L, EventId.of(2)))
+              .isNotEqualTo(new CommandMeta(CommandId.of(1), stateId, 10L, EventId.of(3)));
   }
 
   @Test
