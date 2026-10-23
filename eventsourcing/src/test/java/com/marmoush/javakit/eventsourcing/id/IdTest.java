@@ -29,9 +29,10 @@ class IdTest {
 
     //then
     Assertions.assertThat(equal).isTrue();
-    Assertions.assertThat(id).hasSameHashCodeAs(equalId);
-    Assertions.assertThat(id.equals(differentType)).isFalse();
-    Assertions.assertThat(id).isNotEqualTo(new DefaultId("different"));
+    Assertions.assertThat(id)
+              .hasSameHashCodeAs(equalId)
+              .isNotEqualTo(differentType)
+              .isNotEqualTo(new DefaultId("different"));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new DefaultId(" \t "));
   }
 }
