@@ -1,28 +1,28 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-import com.marmoush.javakit.eventsourcing.Evolver;
-import com.marmoush.javakit.eventsourcing.event.CreationEvent;
-import com.marmoush.javakit.eventsourcing.event.EvolutionEvent;
+import com.marmoush.javakit.eventsourcing.processor.Evolver;
+import com.marmoush.javakit.eventsourcing.event.Event;
+import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.exception.EvolutionException;
 import com.marmoush.javakit.eventsourcing.state.State;
 
 public class SimpleEvolver extends Evolver {
   @Override
-  public State create(CreationEvent creationEvent) {
-    if (creationEvent instanceof StateCreated) {
-      return new SimpleState(creationEvent.meta());
+  public State evolve(Event event) {
+    if (event instanceof StateCreated) {
+      return new SimpleState(event.meta());
     } else {
-      throw EvolutionException.unhandledEventType(creationEvent);
+      throw EvolutionException.unhandledEventType(event);
     }
   }
 
   @Override
-  public State validatedEvolve(State state, EvolutionEvent evolutionEvent) {
+  public State validatedEvolve(State state, Event event) {
     if (state instanceof SimpleState simpleState) {
-      if (evolutionEvent instanceof StateChanged) {
-        return simpleState.withMeta(evolutionEvent.meta());
+      if (event instanceof StateChanged) {
+        return simpleState.withMeta(event.meta());
       } else {
-        throw EvolutionException.unhandledEventType(evolutionEvent);
+        throw EvolutionException.unhandledEventType(event);
       }
     } else {
       throw EvolutionException.unhandledStateType(state);

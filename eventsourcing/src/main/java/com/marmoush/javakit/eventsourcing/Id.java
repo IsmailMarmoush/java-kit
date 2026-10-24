@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.id;
+package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.core.domain.ValueObject;
 

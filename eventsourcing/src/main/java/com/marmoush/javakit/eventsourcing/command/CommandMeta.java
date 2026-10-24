@@ -2,9 +2,8 @@ package com.marmoush.javakit.eventsourcing.command;
 
 import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.SagaSourced;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -22,26 +21,23 @@ import java.util.Optional;
 @Getter
 @EqualsAndHashCode
 @ToString
-@Builder
 @Accessors(fluent = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public abstract class CommandMeta implements SagaSourced, Serializable {
+public class CommandMeta implements SagaSourced, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
 
-  @NonNull
   CommandId commandId;
-
-  @NonNull
   OperationType operationType;
-
-  @NonNull
   StateId stateId;
-
   @Getter(AccessLevel.NONE)
   EventId sagaSource;
 
-  public CommandMeta(CommandId commandId, EventId sagaSource, StateId stateId, OperationType operationType) {
+  @Builder
+  public CommandMeta(@NonNull CommandId commandId,
+                     @NonNull StateId stateId,
+                     @NonNull OperationType operationType,
+                     EventId sagaSource) {
     this.commandId = Objects.requireNonNull(commandId);
     this.sagaSource = sagaSource;
     this.stateId = stateId;

@@ -1,8 +1,8 @@
-package com.marmoush.javakit.eventsourcing;
+package com.marmoush.javakit.eventsourcing.processor;
 
 import com.marmoush.javakit.core.domain.Result;
-import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.error.ESDomainError;
 import com.marmoush.javakit.eventsourcing.event.Event;
 

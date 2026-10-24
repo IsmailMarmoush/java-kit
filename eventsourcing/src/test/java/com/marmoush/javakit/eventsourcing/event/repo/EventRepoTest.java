@@ -2,9 +2,9 @@ package com.marmoush.javakit.eventsourcing.event.repo;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

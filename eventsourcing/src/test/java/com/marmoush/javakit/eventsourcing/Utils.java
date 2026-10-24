@@ -2,8 +2,9 @@ package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.eventsourcing.aggregate.Aggregate;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolver;
 

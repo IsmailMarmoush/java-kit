@@ -1,11 +1,11 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.eventsourcing.Decider;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandStateIdError;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;

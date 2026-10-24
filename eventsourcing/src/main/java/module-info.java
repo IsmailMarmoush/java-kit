@@ -3,7 +3,6 @@ module com.marmoush.javakit.eventsourcing {
   requires org.slf4j;
   requires static lombok;
   exports com.marmoush.javakit.eventsourcing.aggregate;
-  exports com.marmoush.javakit.eventsourcing.aggregate.store;
   exports com.marmoush.javakit.eventsourcing.command;
   exports com.marmoush.javakit.eventsourcing.event;
   exports com.marmoush.javakit.eventsourcing.event.repo;
@@ -11,5 +10,6 @@ module com.marmoush.javakit.eventsourcing {
   exports com.marmoush.javakit.eventsourcing.error;
   exports com.marmoush.javakit.eventsourcing.exception;
   exports com.marmoush.javakit.eventsourcing;
-  exports com.marmoush.javakit.eventsourcing.id;
+  exports com.marmoush.javakit.eventsourcing.processor;
+  exports com.marmoush.javakit.eventsourcing.command.repo;
 }

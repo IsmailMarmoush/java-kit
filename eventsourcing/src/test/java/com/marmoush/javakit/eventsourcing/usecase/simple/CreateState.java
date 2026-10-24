@@ -1,6 +1,6 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-import com.marmoush.javakit.eventsourcing.command.CreationCommand;
-import com.marmoush.javakit.eventsourcing.command.CreationCommandMeta;
+import com.marmoush.javakit.eventsourcing.command.Command;
+import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 
-public record CreateState(CreationCommandMeta meta) implements CreationCommand {}
+public record CreateState(CommandMeta meta) implements Command {}

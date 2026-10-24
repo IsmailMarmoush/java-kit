@@ -1,4 +1,7 @@
-package com.marmoush.javakit.eventsourcing.id;
+package com.marmoush.javakit.eventsourcing.command;
+
+import com.marmoush.javakit.eventsourcing.DefaultId;
+import com.marmoush.javakit.eventsourcing.Id;
 
 import java.util.UUID;
 

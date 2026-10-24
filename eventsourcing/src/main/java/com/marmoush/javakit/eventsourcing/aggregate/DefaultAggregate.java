@@ -1,18 +1,12 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.eventsourcing.Decider;
-import com.marmoush.javakit.eventsourcing.DecisionResult;
-import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.Evolver;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CreationCommand;
-import com.marmoush.javakit.eventsourcing.command.EvolutionCommand;
-import com.marmoush.javakit.eventsourcing.event.CreationEvent;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.EvolutionEvent;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
-import com.marmoush.javakit.eventsourcing.exception.DecisionException;
-import com.marmoush.javakit.eventsourcing.exception.EvolutionException;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.processor.Evolver;
 import com.marmoush.javakit.eventsourcing.state.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +28,7 @@ class DefaultAggregate implements Aggregate {
 
   @Override
   public DecisionResult handle(Command command) {
-    var result = switch (command) {
-      case CreationCommand cc -> handle(cc);
-      case EvolutionCommand ec -> handle(ec);
-      default -> throw DecisionException.unhandledCommandType(command);
-    };
+    var result = process(command);
     if (result instanceof DecisionEvent(Event event)) {
       eventRepo.append(event);
       String msg = "Event[%s] appended".formatted(event.meta());
@@ -47,28 +37,15 @@ class DefaultAggregate implements Aggregate {
     return result;
   }
 
-  public DecisionResult handle(Command command) {
-    return decider.decide(creationCommand);
-  }
-
-  public DecisionResult handle(EvolutionCommand evolutionCommand) {
-    var events = eventRepo.fetch(evolutionCommand.meta().stateId());
-    State state = null;
-    for (Event event : events) {
-      state = switch (event) {
-        case CreationEvent creationEvent -> evolve(creationEvent);
-        case EvolutionEvent evolutionEvent -> evolve(state, evolutionEvent);
-        default -> throw EvolutionException.unhandledEventType(event);
-      };
+  private DecisionResult process(Command command) {
+    var events = eventRepo.fetch(command.meta().stateId());
+    if (events.isEmpty()) {
+      return decider.decide(command);
     }
-    return decider.decide(state, evolutionCommand);
-  }
-
-  State evolve(CreationEvent creationEvent) {
-    return evolver.create(creationEvent);
-  }
-
-  State evolve(State state, EvolutionEvent evolutionEvent) {
-    return evolver.evolve(state, evolutionEvent);
+    State state = evolver.evolve(events.getFirst());
+    for (Event event : events) {
+      state = evolver.evolve(state, event);
+    }
+    return decider.decide(state, command);
   }
 }

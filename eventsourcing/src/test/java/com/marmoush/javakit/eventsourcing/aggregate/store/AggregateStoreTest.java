@@ -2,7 +2,7 @@ package com.marmoush.javakit.eventsourcing.aggregate.store;
 
 import com.marmoush.javakit.eventsourcing.Utils;
 import com.marmoush.javakit.eventsourcing.aggregate.Aggregate;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Named;

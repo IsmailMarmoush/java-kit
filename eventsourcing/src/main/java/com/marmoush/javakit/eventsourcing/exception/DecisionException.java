@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.exception;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.state.State;
 
 public class DecisionException extends ESException {
@@ -23,7 +23,7 @@ public class DecisionException extends ESException {
     return new DecisionException(message);
   }
 
-  public static DecisionException invalidEvolutionCommand(Command command, State state) {
+  public static DecisionException invalidCommand(Command command, State state) {
     var message = "Command cannot be applied to state: stateType=%s, commandType=%s";
     return new DecisionException(message.formatted(state.getClass().getName(), command.getClass().getName()));
   }

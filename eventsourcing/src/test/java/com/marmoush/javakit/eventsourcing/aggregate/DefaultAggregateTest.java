@@ -5,9 +5,9 @@ import com.marmoush.javakit.eventsourcing.error.DuplicateCommand;
 import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandStateIdError;
 import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
@@ -107,7 +107,7 @@ public class DefaultAggregateTest {
   }
 
   @Test
-  void replaysCreationAndEvolutionEventsBeforeHandlingCommand() {
+  void replaysCreationAndEventsBeforeHandlingCommand() {
     //given
     var stateId = StateId.of(0);
     var eventRepo = EventRepo.inMemory();

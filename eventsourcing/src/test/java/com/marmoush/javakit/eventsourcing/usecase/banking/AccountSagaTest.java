@@ -1,9 +1,9 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Credit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.Debited;
 import org.assertj.core.api.Assertions;

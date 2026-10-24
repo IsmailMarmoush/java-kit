@@ -1,14 +1,14 @@
 package com.marmoush.javakit.eventsourcing.aggregate;
 
-import com.marmoush.javakit.eventsourcing.Saga;
-import com.marmoush.javakit.eventsourcing.SagaHandler;
+import com.marmoush.javakit.eventsourcing.processor.Saga;
+import com.marmoush.javakit.eventsourcing.processor.SagaHandler;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;

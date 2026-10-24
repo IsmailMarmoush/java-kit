@@ -1,6 +1,6 @@
 package com.marmoush.javakit.eventsourcing;
 
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 
 public interface Partitioned {
 

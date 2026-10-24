@@ -1,11 +1,10 @@
 package com.marmoush.javakit.eventsourcing.saga;
 
-import com.marmoush.javakit.eventsourcing.Saga;
-import com.marmoush.javakit.eventsourcing.event.CreationEventMeta;
-import com.marmoush.javakit.eventsourcing.event.EvolutionEventMeta;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.processor.Saga;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleSaga;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateChanged;
@@ -24,10 +23,10 @@ class SagaTest {
     StateId bobId = StateId.of("BOB");
     StateId aliceId = StateId.of("ALICE");
 
-    var creationEventMeta = new CreationEventMeta(EventId.randomUUID(), bobId, CommandId.randomUUID());
-    var stateCreated = new StateCreated(creationEventMeta);
-    var evolutionEventMeta = new EvolutionEventMeta(EventId.randomUUID(), 1, bobId, CommandId.randomUUID());
-    var stateChanged = new StateChanged(evolutionEventMeta);
+    var eventMeta = new EventMeta(EventId.randomUUID(), bobId, CommandId.randomUUID());
+    var stateCreated = new StateCreated(eventMeta);
+    var eventMeta = new EventMeta(EventId.randomUUID(), 1, bobId, CommandId.randomUUID());
+    var stateChanged = new StateChanged(eventMeta);
 
     // When
     var firstCommand = saga.react(aliceId, stateCreated).get();
