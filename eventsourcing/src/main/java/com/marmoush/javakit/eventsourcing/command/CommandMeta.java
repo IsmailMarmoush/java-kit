@@ -1,6 +1,7 @@
 package com.marmoush.javakit.eventsourcing.command;
 
 import com.marmoush.javakit.eventsourcing.OperationType;
+import com.marmoush.javakit.eventsourcing.Partitioned;
 import com.marmoush.javakit.eventsourcing.SagaSourced;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.state.StateId;
@@ -23,7 +24,7 @@ import java.util.Optional;
 @ToString
 @Accessors(fluent = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CommandMeta implements SagaSourced, Serializable {
+public class CommandMeta implements SagaSourced, Partitioned, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
 
