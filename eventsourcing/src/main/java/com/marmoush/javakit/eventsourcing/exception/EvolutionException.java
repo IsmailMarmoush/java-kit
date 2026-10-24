@@ -1,7 +1,6 @@
 package com.marmoush.javakit.eventsourcing.exception;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.EvolutionEvent;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 import com.marmoush.javakit.eventsourcing.state.State;
 
@@ -29,14 +28,14 @@ public final class EvolutionException extends ESException {
     return new DecisionException(message);
   }
 
-  public static EvolutionException invalidEventType(EvolutionEvent evolutionEvent, State state) {
+  public static EvolutionException invalidEventType(Event event, State state) {
     var message = "Event cannot be applied to state: stateType=%s, eventType=%s";
-    return new EvolutionException(message.formatted(state.getClass().getName(), evolutionEvent.getClass().getName()));
+    return new EvolutionException(message.formatted(state.getClass().getName(), event.getClass().getName()));
   }
 
-  public static EvolutionException invalidEventStateId(EvolutionEvent evolutionEvent, StateId expectedStateId) {
+  public static EvolutionException invalidEventStateId(Event event, StateId expectedStateId) {
     var message = "Event stateId mismatch: expected=%s, actual=%s";
-    return new EvolutionException(message.formatted(expectedStateId.value(), evolutionEvent.stateId().value()));
+    return new EvolutionException(message.formatted(expectedStateId.value(), event.stateId().value()));
   }
 
   public static EvolutionException invalidEventVersion(Event event, long expectedVersion) {

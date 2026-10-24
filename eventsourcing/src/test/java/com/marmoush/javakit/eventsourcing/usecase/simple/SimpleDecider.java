@@ -4,8 +4,6 @@ import com.marmoush.javakit.eventsourcing.Decider;
 import com.marmoush.javakit.eventsourcing.DecisionResult;
 import com.marmoush.javakit.eventsourcing.command.CreationCommand;
 import com.marmoush.javakit.eventsourcing.command.EvolutionCommand;
-import com.marmoush.javakit.eventsourcing.event.CreationEventMeta;
-import com.marmoush.javakit.eventsourcing.event.EvolutionEventMeta;
 import com.marmoush.javakit.eventsourcing.exception.DecisionException;
 import com.marmoush.javakit.eventsourcing.id.Id;
 import com.marmoush.javakit.eventsourcing.state.State;
@@ -18,8 +16,9 @@ public class SimpleDecider extends Decider {
   }
 
   @Override
-  public DecisionResult decide(CreationCommand command, CreationEventMeta eventMeta) {
+  public DecisionResult decide(CreationCommand command) {
     if (command instanceof CreateState) {
+      var eventMeta = this.eventMeta(command);
       return DecisionResult.of(new StateCreated(eventMeta));
     } else {
       throw DecisionException.unhandledCommandType(command);
@@ -27,9 +26,10 @@ public class SimpleDecider extends Decider {
   }
 
   @Override
-  public DecisionResult decide(State state, EvolutionCommand command, EvolutionEventMeta eventMeta) {
+  public DecisionResult decide(State state, EvolutionCommand command) {
     if (state instanceof SimpleState) {
       if (command instanceof ChangeState) {
+        var eventMeta = this.eventMeta(state, command);
         return DecisionResult.success(new StateChanged(eventMeta));
       } else {
         throw DecisionException.unhandledCommandType(command);

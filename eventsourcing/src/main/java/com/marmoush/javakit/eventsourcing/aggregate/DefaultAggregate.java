@@ -47,7 +47,7 @@ class DefaultAggregate implements Aggregate {
     return result;
   }
 
-  public DecisionResult handle(CreationCommand creationCommand) {
+  public DecisionResult handle(Command command) {
     return decider.decide(creationCommand);
   }
 

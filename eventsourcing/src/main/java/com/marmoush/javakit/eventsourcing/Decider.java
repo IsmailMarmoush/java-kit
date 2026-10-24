@@ -1,8 +1,6 @@
 package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CreationCommand;
-import com.marmoush.javakit.eventsourcing.command.EvolutionCommand;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.exception.DecisionException;
 import com.marmoush.javakit.eventsourcing.id.EventId;
@@ -20,32 +18,44 @@ public abstract class Decider {
   }
 
   /**
-   * @param creationCommand   the incoming command
-   * @param creationEventMeta the new EventMeta
+   * @param command the incoming command
    * @return a new Event with eventMeta as its value
    */
-  protected abstract DecisionResult decide(CreationCommand creationCommand, EventMeta creationEventMeta);
+  public abstract DecisionResult decide(Command command);
 
   /**
-   * @param state              the initial state
-   * @param evolutionCommand   the incoming command
-   * @param evolutionEventMeta the new EventMeta
+   * @param state   the initial state
+   * @param command the incoming command
    * @return a CommandResult with Event(eventMeta) as its value if accepted
    *
    */
-  protected abstract DecisionResult decide(State state,
-                                           EvolutionCommand evolutionCommand,
-                                           EventMeta evolutionEventMeta);
-
-  public DecisionResult decide(CreationCommand creationCommand) {
-    return decide(creationCommand, eventMeta(creationCommand));
+  public final DecisionResult decide(State state, Command command) {
+    if (!state.stateId().equals(command.meta().stateId())) {
+      throw DecisionException.invalidCommandStateId(command, state.stateId());
+    }
+    return validatedDecide(state, command);
   }
 
-  public DecisionResult decide(State state, EvolutionCommand evolutionCommand) {
-    return decide(state, evolutionCommand, eventMeta(state, evolutionCommand));
-  }
+  /**
+   * Called after stateId validated {@link #decide(State, Command)}
+   */
+  protected abstract DecisionResult validatedDecide(State state, Command command);
 
-  private EventMeta eventMeta(Command command) {
+  /**
+   * Helper function to create EventMeta from CreationCommand
+   *
+   * @param command incoming CreationCommand
+   * @return EventMeta from CreationCommand
+   */
+  protected EventMeta eventMeta(Command command) {
+    EventMeta.builder()
+             .eventId(EventId.of(idSupplier().get()))
+             .operationType(command.meta().operationType())
+             .version(0)
+             .stateId(StateId.of(idSupplier().get()))
+             .commandId(command.meta().commandId())
+             .sagaSource(command.meta().sagaSource().orElse(null))
+             .build();
     return new EventMeta(EventId.of(idSupplier().get()),
                          0,
                          StateId.of(idSupplier().get()),
@@ -53,15 +63,22 @@ public abstract class Decider {
                          command.meta().sagaSource().orElse(null));
   }
 
-  private EventMeta eventMeta(State state, EvolutionCommand evolutionCommand) {
-    if (!state.meta().stateId().equals(evolutionCommand.meta().stateId())) {
-      throw DecisionException.invalidCommandStateId(evolutionCommand, state.meta().stateId());
+  /**
+   * Helper function to create EventMeta from CreationCommand
+   *
+   * @param state   current State
+   * @param command incoming CreationCommand
+   * @return EventMeta from CreationCommand
+   */
+  protected EventMeta eventMeta(State state, Command command) {
+    if (!state.meta().stateId().equals(command.meta().stateId())) {
+      throw DecisionException.invalidCommandStateId(command, state.meta().stateId());
     }
     return new EventMeta(EventId.of(idSupplier().get()),
                          state.meta().version() + 1,
                          state.meta().stateId(),
-                         evolutionCommand.meta().commandId(),
-                         evolutionCommand.meta().sagaSource().orElse(null));
+                         command.meta().commandId(),
+                         command.meta().sagaSource().orElse(null));
   }
 
   public Supplier<Id> idSupplier() {

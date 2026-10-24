@@ -1,11 +1,10 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.StateMeta;
 
-public record SimpleState(StateMeta meta) implements State {
-  @Override
-  public State withMeta(StateMeta meta) {
+public record SimpleState(EventMeta meta) implements State {
+  public State withMeta(EventMeta meta) {
     return new SimpleState(meta);
   }
 }

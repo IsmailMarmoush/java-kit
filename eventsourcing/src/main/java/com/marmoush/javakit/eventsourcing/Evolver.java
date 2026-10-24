@@ -8,27 +8,27 @@ import com.marmoush.javakit.eventsourcing.state.State;
 public abstract class Evolver {
 
   /**
-   * @param creationEvent A creational event
+   * @param event A creational event
    * @return a new State with stateMeta as its meta value
    */
-  public abstract State create(CreationEvent creationEvent);
+  public abstract State create(CreationEvent event);
 
   /**
-   * @param currentState   current State
-   * @param evolutionEvent evolution event to be applied upon current state
+   * @param currentState current State
+   * @param event        evolution event to be applied upon current state
    * @return new state
    */
-  public State evolve(State currentState, EvolutionEvent evolutionEvent) {
-    if (!currentState.stateId().equals(evolutionEvent.stateId())) {
-      throw EvolutionException.invalidEventStateId(evolutionEvent, currentState.stateId());
+  public final State evolve(State currentState, EvolutionEvent event) {
+    if (!currentState.stateId().equals(event.stateId())) {
+      throw EvolutionException.invalidEventStateId(event, currentState.stateId());
     }
-    return validStateEvolve(currentState, evolutionEvent);
+    return validatedEvolve(currentState, event);
   }
 
   /**
    * Called after stateId validated {@link evolve(State, EvolutionEvent)}
    *
    */
-  protected abstract State validStateEvolve(State currentState, EvolutionEvent evolutionEvent);
+  protected abstract State validatedEvolve(State currentState, EvolutionEvent evolutionEvent);
 
 }

@@ -5,6 +5,7 @@ import com.marmoush.javakit.eventsourcing.DecisionResult;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.command.Command;
+import com.marmoush.javakit.eventsourcing.command.CreationCommand;
 import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledTypeException;
@@ -36,8 +37,9 @@ import java.util.function.Supplier;
 public record AccountDecider(Supplier<EventId> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public DecisionResult decide(Command command, EventMeta eventMeta) {
+  public DecisionResult decide(CreationCommand command) {
     if (command instanceof AccountCommand accountCommand) {
+      var eventMeta = this.eventMeta(accountCommand);
       return decide(accountCommand, eventMeta);
     } else {
       throw UnhandledTypeException.of(command);
@@ -45,7 +47,7 @@ public record AccountDecider(Supplier<EventId> idSupplier, Supplier<Long> timeSu
   }
 
   @Override
-  public DecisionResult decide(State state, Command command, EventMeta eventMeta) {
+  public DecisionResult validatedDecide(State state, Command command) {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
         return decide(account, accountCommand, eventMeta);

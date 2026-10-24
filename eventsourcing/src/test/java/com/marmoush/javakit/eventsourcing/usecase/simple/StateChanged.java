@@ -1,6 +1,6 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.event.EvolutionEvent;
-import com.marmoush.javakit.eventsourcing.event.EvolutionEventMeta;
 
-public record StateChanged(EvolutionEventMeta meta) implements EvolutionEvent {}
+public record StateChanged(EventMeta meta) implements EvolutionEvent {}
