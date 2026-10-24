@@ -2,8 +2,8 @@ package com.marmoush.javakit.eventsourcing.aggregate;
 
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.error.DuplicateCommand;
-import com.marmoush.javakit.eventsourcing.error.MismatchingCommandStateIdError;
-import com.marmoush.javakit.eventsourcing.error.MismatchingCommandError;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandStateIdError;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
 import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.id.EventId;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SyncAggregateTest {
+public class DefaultAggregateTest {
 
   @Test
   void handlesCreationAndSubsequentEvolution() {
@@ -124,9 +124,9 @@ public class SyncAggregateTest {
     assertThat(eventRepo.size(stateId)).isEqualTo(3);
   }
 
-  private static SyncAggregate newAggregate(StateId stateId, EventRepo eventRepo) {
+  private static DefaultAggregate newAggregate(StateId stateId, EventRepo eventRepo) {
     var decider = new SimpleDecider(EventId::randomUUID, () -> 0L);
-    return new SyncAggregate(stateId, decider, new SimpleEvolver(), eventRepo);
+    return new DefaultAggregate(stateId, decider, new SimpleEvolver(), eventRepo);
   }
 
   @SuppressWarnings("SameParameterValue")

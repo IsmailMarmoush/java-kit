@@ -1,10 +1,10 @@
 package com.marmoush.javakit.eventsourcing.event;
 
 import com.marmoush.javakit.eventsourcing.Partitioned;
+import com.marmoush.javakit.eventsourcing.SagaSourced;
 import com.marmoush.javakit.eventsourcing.Versioned;
 import com.marmoush.javakit.eventsourcing.id.CommandId;
 import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 
 import java.io.Serial;
@@ -12,30 +12,16 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class EventMeta implements Partitioned, Versioned, Serializable {
+public abstract class EventMeta implements Partitioned, Versioned, SagaSourced, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
   private final EventId eventId;
   private final long version;
   private final StateId stateId;
   private final CommandId commandId;
-  private final long timestamp;
   private final EventId sagaSource;
 
-  public EventMeta(EventId id, long version, StateId stateId, CommandId commandId) {
-    this(id, version, stateId, commandId, System.currentTimeMillis());
-  }
-
-  public EventMeta(EventId id, long version, StateId stateId, CommandId commandId, long timestamp) {
-    this(id, version, stateId, commandId, timestamp, null);
-  }
-
-  public EventMeta(EventId eventId,
-                   long version,
-                   StateId stateId,
-                   CommandId commandId,
-                   long timestamp,
-                   EventId sagaSource) {
+  public EventMeta(EventId eventId, long version, StateId stateId, CommandId commandId, EventId sagaSource) {
     if (version < 0) {
       throw new IllegalArgumentException("version can't be less than zero");
     }
@@ -43,13 +29,7 @@ public class EventMeta implements Partitioned, Versioned, Serializable {
     this.version = version;
     this.stateId = Objects.requireNonNull(stateId);
     this.commandId = Objects.requireNonNull(commandId);
-    this.timestamp = timestamp;
     this.sagaSource = sagaSource;
-  }
-
-  @Override
-  public PartitionId pKey() {
-    return PartitionId.of(stateId);
   }
 
   public EventId eventId() {return eventId;}
@@ -57,12 +37,12 @@ public class EventMeta implements Partitioned, Versioned, Serializable {
   @Override
   public long version() {return version;}
 
+  @Override
   public StateId stateId() {return stateId;}
 
   public CommandId commandId() {return commandId;}
 
-  public long timestamp() {return timestamp;}
-
+  @Override
   public Optional<EventId> sagaSource() {return Optional.ofNullable(sagaSource);}
 
   @Override
@@ -73,23 +53,22 @@ public class EventMeta implements Partitioned, Versioned, Serializable {
       return false;
     EventMeta eventMeta = (EventMeta) o;
     return version == eventMeta.version
-           && timestamp == eventMeta.timestamp
-           && Objects.equals(eventId,
-                             eventMeta.eventId)
-           && Objects.equals(stateId, eventMeta.stateId)
+           && Objects.equals(eventId, eventMeta.eventId)
+           && Objects.equals(stateId,
+                             eventMeta.stateId)
            && Objects.equals(commandId, eventMeta.commandId)
            && Objects.equals(sagaSource, eventMeta.sagaSource);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(eventId, version, stateId, commandId, timestamp, sagaSource);
+    return Objects.hash(eventId, version, stateId, commandId, sagaSource);
   }
 
   @Override
   public String toString() {
-    String msg = "EventMeta{eventId=%s, version=%d, stateId=%s, commandId=%s, timestamp=%d, sagaSource=%s}";
-    return msg.formatted(eventId, version, stateId, commandId, timestamp, sagaSource);
+    String msg = "EventMeta{eventId=%s, version=%d, stateId=%s, commandId=%s, sagaSource=%s}";
+    return msg.formatted(eventId, version, stateId, commandId, sagaSource);
   }
 }
 

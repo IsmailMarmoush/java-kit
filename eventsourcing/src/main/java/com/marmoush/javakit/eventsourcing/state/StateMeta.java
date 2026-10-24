@@ -1,29 +1,41 @@
 package com.marmoush.javakit.eventsourcing.state;
 
 import com.marmoush.javakit.eventsourcing.Partitioned;
-import com.marmoush.javakit.eventsourcing.Versioned;
-import com.marmoush.javakit.eventsourcing.id.PartitionId;
 import com.marmoush.javakit.eventsourcing.id.StateId;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
-public record StateMeta(StateId stateId, long version) implements Partitioned, Versioned, Serializable {
-  public StateMeta {
-    if (version < 0) {
-      throw new IllegalArgumentException("Version can't be less than zero!");
-    }
-  }
+public class StateMeta implements Partitioned, Serializable {
+  @Serial
+  private static final long serialVersionUID = 0L;
+  private final StateId stateId;
 
   public StateMeta(StateId stateId) {
-    this(stateId, 0);
+    this.stateId = stateId;
   }
 
   @Override
-  public PartitionId pKey() {
-    return PartitionId.of(stateId);
+  public StateId stateId() {return stateId;}
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this)
+      return true;
+    if (obj == null || obj.getClass() != this.getClass())
+      return false;
+    var that = (StateMeta) obj;
+    return Objects.equals(this.stateId, that.stateId);
   }
 
-  public StateMeta incrementVersion() {
-    return new StateMeta(stateId, version + 1);
+  @Override
+  public int hashCode() {
+    return Objects.hash(stateId);
+  }
+
+  @Override
+  public String toString() {
+    return "StateMeta[" + "stateId=" + stateId + ']';
   }
 }

@@ -5,9 +5,9 @@ import com.marmoush.javakit.eventsourcing.DecisionResult;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.error.MismatchingCommandError;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.exception.UnhandledCommandTypeException;
+import com.marmoush.javakit.eventsourcing.exception.UnhandledTypeException;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.id.EventId;
 import com.marmoush.javakit.eventsourcing.state.State;
@@ -33,14 +33,14 @@ import com.marmoush.javakit.eventsourcing.usecase.banking.state.OpenAccount;
 
 import java.util.function.Supplier;
 
-public record AccountDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> timeSupplier) implements Decider {
+public record AccountDecider(Supplier<EventId> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
   public DecisionResult decide(Command command, EventMeta eventMeta) {
     if (command instanceof AccountCommand accountCommand) {
       return decide(accountCommand, eventMeta);
     } else {
-      throw UnhandledCommandTypeException.of(command);
+      throw UnhandledTypeException.of(command);
     }
   }
 
@@ -50,7 +50,7 @@ public record AccountDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> t
       if (command instanceof AccountCommand accountCommand) {
         return decide(account, accountCommand, eventMeta);
       } else {
-        throw UnhandledCommandTypeException.of(command);
+        throw UnhandledTypeException.of(command);
       }
     } else {
       throw UnhandledStateTypeException.of(state);
@@ -61,7 +61,7 @@ public record AccountDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> t
   private DecisionResult decide(AccountCommand command, EventMeta newEventMeta) {
     return switch (command) {
       case CreateAccount cmd -> DecisionEvent.of(new AccountCreated(newEventMeta, cmd.accountName(), cmd.balance()));
-      default -> throw UnhandledCommandTypeException.of(command);
+      default -> throw UnhandledTypeException.of(command);
     };
   }
 

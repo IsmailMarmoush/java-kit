@@ -2,7 +2,7 @@ package com.marmoush.javakit.eventsourcing.usecase.simple;
 
 import com.marmoush.javakit.eventsourcing.Evolver;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.exception.MismatchingEventException;
+import com.marmoush.javakit.eventsourcing.exception.EvolutionException;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledEventTypeException;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
 import com.marmoush.javakit.eventsourcing.state.State;
@@ -22,7 +22,7 @@ public record SimpleEvolver() implements Evolver {
   public State evolve(State state, Event event, StateMeta stateMeta) {
     if (state instanceof SimpleState simpleState) {
       return switch (event) {
-        case StateCreated stateCreated -> throw MismatchingEventException.of(simpleState, stateCreated);
+        case StateCreated stateCreated -> throw EvolutionException.of(simpleState, stateCreated);
         case StateChanged _ -> new SimpleState(stateMeta);
         default -> throw UnhandledStateTypeException.of(simpleState);
       };
