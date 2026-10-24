@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public abstract class Decider {
   private final Supplier<Id> idSupplier;
 
-  public Decider(Supplier<Id> idSupplier) {
+  protected Decider(Supplier<Id> idSupplier) {
     this.idSupplier = idSupplier;
   }
 

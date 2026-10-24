@@ -8,15 +8,15 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class Saga {
-  private final Supplier<Id> IdSupplier;
+  private final Supplier<Id> idSupplier;
 
-  public Saga(Supplier<Id> idSupplier) {
-    IdSupplier = idSupplier;
+  protected Saga(Supplier<Id> idSupplier) {
+    this.idSupplier = idSupplier;
   }
 
   public abstract Optional<Command> react(Event event);
 
   protected Supplier<Id> idSupplier() {
-    return IdSupplier;
+    return idSupplier;
   }
 }

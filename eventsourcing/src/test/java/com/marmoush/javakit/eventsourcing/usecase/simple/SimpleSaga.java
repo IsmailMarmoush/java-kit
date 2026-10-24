@@ -20,7 +20,7 @@ public class SimpleSaga extends Saga {
   @Override
   public Optional<Command> react(Event event) {
     return switch (event) {
-      case StateCreated s -> Optional.empty();
+      case StateCreated _ -> Optional.empty();
       case StateChanged s -> Optional.of(new ChangeState(CommandMeta.builder()
                                                                     .commandId(CommandId.of(idSupplier().get()))
                                                                     .stateId(s.meta().stateId())
