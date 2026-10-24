@@ -35,11 +35,11 @@ public final class EvolutionException extends ESException {
 
   public static EvolutionException invalidEventStateId(Event event, StateId expectedStateId) {
     var message = "Event stateId mismatch: expected=%s, actual=%s";
-    return new EvolutionException(message.formatted(expectedStateId.value(), event.stateId().value()));
+    return new EvolutionException(message.formatted(expectedStateId.value(), event.meta().stateId().value()));
   }
 
   public static EvolutionException invalidEventVersion(Event event, long expectedVersion) {
-    var message = "Invalid Event version: actual=%s, expected=%s".formatted(event.version(), expectedVersion);
+    var message = "Invalid Event version: actual=%s, expected=%s".formatted(event.meta().version(), expectedVersion);
     return new EvolutionException(message);
   }
 

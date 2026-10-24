@@ -18,8 +18,8 @@ public abstract class Evolver {
    * @return new state
    */
   public final State evolve(State currentState, Event event) {
-    if (!currentState.stateId().equals(event.stateId())) {
-      throw EvolutionException.invalidEventStateId(event, currentState.stateId());
+    if (!currentState.meta().stateId().equals(event.meta().stateId())) {
+      throw EvolutionException.invalidEventStateId(event, currentState.meta().stateId());
     }
     return validatedEvolve(currentState, event);
   }

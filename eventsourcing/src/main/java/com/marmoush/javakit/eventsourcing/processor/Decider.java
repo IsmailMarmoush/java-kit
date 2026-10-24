@@ -30,8 +30,8 @@ public abstract class Decider {
    *
    */
   public final DecisionResult decide(State state, Command command) {
-    if (!state.stateId().equals(command.meta().stateId())) {
-      throw DecisionException.invalidCommandStateId(command, state.stateId());
+    if (!state.meta().stateId().equals(command.meta().stateId())) {
+      throw DecisionException.invalidCommandStateId(command, state.meta().stateId());
     }
     return validatedDecide(state, command);
   }
