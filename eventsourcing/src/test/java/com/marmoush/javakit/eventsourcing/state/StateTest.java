@@ -1,6 +1,9 @@
 package com.marmoush.javakit.eventsourcing.state;
 
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.OperationType;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,22 +12,17 @@ class StateTest {
   void exposesMetadataThroughConvenienceMethods() {
     //given
     var stateId = StateId.of("state");
-    State state = new TestState(new StateMeta(stateId, 4));
+    State state = new TestState(EventMeta.builder()
+                                         .eventId(EventId.of("event"))
+                                         .operationType(OperationType.EVOLUTION)
+                                         .version(4)
+                                         .stateId(stateId)
+                                         .commandId(CommandId.of("command"))
+                                         .build());
 
-    //when
-    var partitionKey = state.pKey();
-
-    //then
-    Assertions.assertThat(state.stateId()).isEqualTo(stateId);
-    Assertions.assertThat(state.version()).isEqualTo(4);
-    Assertions.assertThat(partitionKey.value()).isEqualTo(stateId.value());
-    Assertions.assertThat(state.withMeta(new StateMeta(stateId, 5)).version()).isEqualTo(5);
+    Assertions.assertThat(state.meta().stateId()).isEqualTo(stateId);
+    Assertions.assertThat(state.meta().version()).isEqualTo(4);
   }
 
-  private record TestState(StateMeta meta) implements State {
-    @Override
-    public State withMeta(StateMeta newMeta) {
-      return new TestState(newMeta);
-    }
-  }
+  private record TestState(EventMeta meta) implements State {}
 }

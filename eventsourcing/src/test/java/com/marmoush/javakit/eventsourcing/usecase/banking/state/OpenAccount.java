@@ -1,15 +1,14 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking.state;
 
-import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.StateMeta;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 
-public record OpenAccount(StateMeta meta,
+public record OpenAccount(EventMeta meta,
                           String name,
                           long balance,
                           int debitCount,
                           int confirmedDebit,
                           int creditCount) implements Account {
-  public OpenAccount(StateMeta meta, String name, long balance) {
+  public OpenAccount(EventMeta meta, String name, long balance) {
     this(meta, name, balance, 0, 0, 0);
   }
 
@@ -18,41 +17,27 @@ public record OpenAccount(StateMeta meta,
   }
 
   public OpenAccount withCredit(long credit) {
-    return new OpenAccount(meta.incrementVersion(),
-                           name,
-                           balance + credit,
-                           debitCount,
-                           confirmedDebit,
-                           creditCount + 1);
+    return new OpenAccount(meta, name, balance + credit, debitCount, confirmedDebit, creditCount + 1);
   }
 
   public OpenAccount withDebit(long debit) {
-    return new OpenAccount(meta.incrementVersion(), name, balance - debit, debitCount + 1, confirmedDebit, creditCount);
+    return new OpenAccount(meta, name, balance - debit, debitCount + 1, confirmedDebit, creditCount);
   }
 
   public OpenAccount withDebitConfirmed() {
-    return new OpenAccount(meta.incrementVersion(), name, balance, debitCount, confirmedDebit + 1, creditCount);
+    return new OpenAccount(meta, name, balance, debitCount, confirmedDebit + 1, creditCount);
   }
 
   public OpenAccount withDebitRejected(long returnedDebit) {
-    return new OpenAccount(meta.incrementVersion(),
-                           name,
-                           balance + returnedDebit,
-                           debitCount - 1,
-                           confirmedDebit,
-                           creditCount);
+    return new OpenAccount(meta, name, balance + returnedDebit, debitCount - 1, confirmedDebit, creditCount);
   }
 
   public OpenAccount withName(String newName) {
-    return new OpenAccount(meta.incrementVersion(), newName, balance, debitCount, confirmedDebit, creditCount);
+    return new OpenAccount(meta, newName, balance, debitCount, confirmedDebit, creditCount);
   }
 
   public boolean canDebit(long amount) {
     return balance - amount > 0;
   }
 
-  @Override
-  public State withMeta(StateMeta meta) {
-    return new OpenAccount(meta, name, balance, debitCount, confirmedDebit, creditCount);
-  }
 }

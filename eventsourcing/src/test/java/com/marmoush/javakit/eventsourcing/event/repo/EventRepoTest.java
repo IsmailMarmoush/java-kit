@@ -1,10 +1,11 @@
 package com.marmoush.javakit.eventsourcing.event.repo;
 
+import com.marmoush.javakit.eventsourcing.OperationType;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
 import com.marmoush.javakit.eventsourcing.event.Event;
+import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,8 @@ class EventRepoTest {
     var repo = EventRepo.inMemory();
     var firstState = StateId.of("first");
     var secondState = StateId.of("second");
-    Event firstEvent = event("event-1", firstState, "command-1");
-    Event secondEvent = event("event-2", firstState, "command-2");
+    var firstEvent = event("event-1", firstState, "command-1");
+    var secondEvent = event("event-2", firstState, "command-2");
 
     //when
     repo.append(firstEvent);
@@ -38,12 +39,12 @@ class EventRepoTest {
   void usesProvidedEventMapAsInitialStorage() {
     //given
     var stateId = StateId.of("state");
-    Event seeded = event("seeded", stateId, "command-1");
-    var events = new ArrayList<Event>(List.of(seeded));
+    var seeded = event("seeded", stateId, "command-1");
+    var events = new ArrayList<>(List.of(seeded));
     var initialData = new HashMap<StateId, List<Event>>();
     initialData.put(stateId, events);
     var repo = EventRepo.inMemory(initialData);
-    Event appended = event("appended", stateId, "command-2");
+    var appended = event("appended", stateId, "command-2");
 
     //when
     repo.append(appended);
@@ -55,6 +56,11 @@ class EventRepoTest {
   }
 
   private static Event event(String eventId, StateId stateId, String commandId) {
-    return new StateCreated(new EventMeta(EventId.of(eventId), 0, stateId, CommandId.of(commandId)));
+    return new StateCreated(EventMeta.builder()
+                                     .eventId(EventId.of(eventId))
+                                     .operationType(OperationType.CREATION)
+                                     .stateId(stateId)
+                                     .commandId(CommandId.of(commandId))
+                                     .build());
   }
 }

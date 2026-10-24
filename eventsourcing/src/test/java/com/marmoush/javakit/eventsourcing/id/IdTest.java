@@ -1,5 +1,8 @@
 package com.marmoush.javakit.eventsourcing.id;
 
+import com.marmoush.javakit.eventsourcing.Id;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,21 +21,18 @@ class IdTest {
   }
 
   @Test
-  void idsCompareByValueAndConcreteType() {
+  void idsCompareByValue() {
     //given
-    Id id = new DefaultId("same");
-    var equalId = new DefaultId("same");
-    var differentType = new StateId("same");
+    Id id = new StateId("same");
+    var equalId = StateId.of("same");
+    var differentType = CommandId.of("same");
 
     //when
     var equal = id.equals(equalId);
 
     //then
     Assertions.assertThat(equal).isTrue();
-    Assertions.assertThat(id)
-              .hasSameHashCodeAs(equalId)
-              .isNotEqualTo(differentType)
-              .isNotEqualTo(new DefaultId("different"));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new DefaultId(" \t "));
+    Assertions.assertThat(id).hasSameHashCodeAs(equalId).isEqualTo(differentType).isNotEqualTo(StateId.of("different"));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> StateId.of(" \t "));
   }
 }

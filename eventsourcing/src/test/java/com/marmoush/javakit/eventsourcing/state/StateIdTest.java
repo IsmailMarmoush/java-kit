@@ -1,7 +1,6 @@
 package com.marmoush.javakit.eventsourcing.state;
 
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,8 +27,8 @@ class StateIdTest {
   }
 
   @Test
-  void checkToString() {
-    Assertions.assertThat(new StateId("id")).hasToString("id");
+  void exposesValue() {
+    Assertions.assertThat(new StateId("id").value()).isEqualTo("id");
   }
 
   @Test
@@ -43,7 +42,8 @@ class StateIdTest {
     var id2 = StateId.of(uuidStr);
 
     // Then
-    Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
+    Assertions.assertThat(id1).isEqualTo(id2);
+    Assertions.assertThat(id2.value()).isEqualTo(uuidStr);
   }
 
   @Test

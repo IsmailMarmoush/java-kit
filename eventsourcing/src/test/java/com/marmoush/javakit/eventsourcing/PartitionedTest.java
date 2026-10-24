@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing;
 
 import com.marmoush.javakit.core.math.MathOps;
-import com.marmoush.javakit.eventsourcing.id.PartitionId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,7 +27,7 @@ public class PartitionedTest {
   @MethodSource("totalPartitions")
   void uuidShardsShouldBeNormal(int totalPartitions) {
     // Given
-    var shards = createShards(_ -> PartitionId.randomUUID());
+    var shards = createShards(_ -> StateId.randomUUID());
     var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
     int maxOutliers = getMaxOutliers(totalPartitions);
 
@@ -42,7 +42,7 @@ public class PartitionedTest {
   @MethodSource("totalPartitions")
   void longShardsShouldBeNormal(int totalPartitions) {
     // Given
-    var shards = createShards(PartitionId::of);
+    var shards = createShards(StateId::of);
     var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
 
     // When
@@ -61,7 +61,7 @@ public class PartitionedTest {
     return (int) (totalPartitions * 0.1);
   }
 
-  private static List<Partitioned> createShards(Function<Integer, PartitionId> idGen) {
+  private static List<Partitioned> createShards(Function<Integer, StateId> idGen) {
     return IntStream.range(0, TOTAL_SHARDS).mapToObj(idGen::apply).map(Shard::new).map(s -> (Partitioned) s).toList();
   }
 
@@ -75,5 +75,5 @@ public class PartitionedTest {
     return shards.stream().filter(sh -> sh.isInPartition(partition, totalPartitions)).count();
   }
 
-  private record Shard(PartitionId pKey) implements Partitioned {}
+  private record Shard(StateId stateId) implements Partitioned {}
 }

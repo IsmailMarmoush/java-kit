@@ -1,42 +1,40 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-import com.marmoush.javakit.eventsourcing.Decider;
-import com.marmoush.javakit.eventsourcing.DecisionResult;
-import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.Id;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.error.MismatchingCommandError;
-import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.exception.UnhandledCommandTypeException;
-import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
-import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.exception.DecisionException;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
 import com.marmoush.javakit.eventsourcing.state.State;
 
 import java.util.function.Supplier;
 
-public record SimpleDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> timeSupplier) implements Decider {
+public class SimpleDecider extends Decider {
+  public SimpleDecider(Supplier<Id> idSupplier) {
+    super(idSupplier);
+  }
+
   @Override
-  public DecisionResult decide(Command command, EventMeta eventMeta) {
+  public DecisionResult decide(Command command) {
     if (command instanceof CreateState) {
+      var eventMeta = this.eventMeta(command);
       return DecisionResult.of(new StateCreated(eventMeta));
     } else {
-      throw UnhandledCommandTypeException.of(command);
+      throw DecisionException.unhandledCommandType(command);
     }
   }
 
   @Override
-  public DecisionResult decide(State state, Command command, EventMeta eventMeta) {
-    if (state instanceof SimpleState simpleState) {
-      return decide(command, simpleState, eventMeta);
+  protected DecisionResult validatedDecide(State state, Command command) {
+    if (state instanceof SimpleState) {
+      if (command instanceof ChangeState) {
+        var eventMeta = this.eventMeta(state, command);
+        return DecisionResult.success(new StateChanged(eventMeta));
+      } else {
+        throw DecisionException.unhandledCommandType(command);
+      }
     } else {
-      throw UnhandledStateTypeException.of(state);
+      throw DecisionException.unhandledCommandType(command);
     }
-  }
-
-  private DecisionResult decide(Command command, SimpleState simpleState, EventMeta eventMeta) {
-    return switch (command) {
-      case CreateState createState -> DecisionFailure.of(MismatchingCommandError.of(simpleState, createState));
-      case ChangeState _ -> DecisionResult.success(new StateChanged(eventMeta));
-      default -> throw UnhandledCommandTypeException.of(command);
-    };
   }
 }

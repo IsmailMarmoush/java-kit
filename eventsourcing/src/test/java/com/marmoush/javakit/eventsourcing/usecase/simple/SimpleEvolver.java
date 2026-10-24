@@ -1,33 +1,30 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-import com.marmoush.javakit.eventsourcing.Evolver;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.exception.MismatchingEventException;
-import com.marmoush.javakit.eventsourcing.exception.UnhandledEventTypeException;
-import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
+import com.marmoush.javakit.eventsourcing.exception.EvolutionException;
+import com.marmoush.javakit.eventsourcing.processor.Evolver;
 import com.marmoush.javakit.eventsourcing.state.State;
-import com.marmoush.javakit.eventsourcing.state.StateMeta;
 
-public record SimpleEvolver() implements Evolver {
+public class SimpleEvolver extends Evolver {
   @Override
-  public State evolve(Event event, StateMeta stateMeta) {
+  public State evolve(Event event) {
     if (event instanceof StateCreated) {
-      return new SimpleState(stateMeta);
+      return new SimpleState(event.meta());
     } else {
-      throw UnhandledEventTypeException.of(event);
+      throw EvolutionException.unhandledEventType(event);
     }
   }
 
   @Override
-  public State evolve(State state, Event event, StateMeta stateMeta) {
+  public State validatedEvolve(State state, Event event) {
     if (state instanceof SimpleState simpleState) {
-      return switch (event) {
-        case StateCreated stateCreated -> throw MismatchingEventException.of(simpleState, stateCreated);
-        case StateChanged _ -> new SimpleState(stateMeta);
-        default -> throw UnhandledStateTypeException.of(simpleState);
-      };
+      if (event instanceof StateChanged) {
+        return simpleState.withMeta(event.meta());
+      } else {
+        throw EvolutionException.unhandledEventType(event);
+      }
     } else {
-      throw UnhandledStateTypeException.of(state);
+      throw EvolutionException.unhandledStateType(state);
     }
   }
 }

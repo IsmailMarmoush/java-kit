@@ -1,6 +1,5 @@
 package com.marmoush.javakit.eventsourcing.command;
 
-import com.marmoush.javakit.eventsourcing.id.CommandId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +28,8 @@ class CommandIdTest {
   }
 
   @Test
-  void checkToString() {
-    Assertions.assertThat(new CommandId("id")).hasToString("id");
+  void exposesValue() {
+    Assertions.assertThat(new CommandId("id").value()).isEqualTo("id");
   }
 
   @Test
@@ -44,7 +43,8 @@ class CommandIdTest {
     var id2 = CommandId.of(uuidStr);
 
     // Then
-    Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
+    Assertions.assertThat(id1).isEqualTo(id2);
+    Assertions.assertThat(id2.value()).isEqualTo(uuidStr);
   }
 
   @Test

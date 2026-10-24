@@ -1,6 +1,5 @@
 package com.marmoush.javakit.eventsourcing.event;
 
-import com.marmoush.javakit.eventsourcing.id.EventId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +28,8 @@ class EventIdTest {
   }
 
   @Test
-  void checkToString() {
-    Assertions.assertThat(new EventId("id")).hasToString("id");
+  void exposesValue() {
+    Assertions.assertThat(new EventId("id").value()).isEqualTo("id");
   }
 
   @Test
@@ -44,7 +43,8 @@ class EventIdTest {
     var id2 = EventId.of(uuidStr);
 
     // Then
-    Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
+    Assertions.assertThat(id1).isEqualTo(id2);
+    Assertions.assertThat(id2.value()).isEqualTo(uuidStr);
   }
 
   @Test

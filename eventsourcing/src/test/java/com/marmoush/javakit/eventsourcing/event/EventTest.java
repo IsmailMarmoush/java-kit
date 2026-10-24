@@ -1,8 +1,8 @@
 package com.marmoush.javakit.eventsourcing.event;
 
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.OperationType;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,19 +14,32 @@ class EventTest {
     var eventId = EventId.of("event");
     var commandId = CommandId.of("command");
     var sagaSource = EventId.of("source");
-    Event event = new TestEvent(new EventMeta(eventId, 3, stateId, commandId, 123L, sagaSource));
 
-    //when
-    var partitionKey = event.pKey();
+    // When
+    Event event = new TestEvent(eventMeta(eventId, 3, stateId, commandId, sagaSource));
 
-    //then
-    Assertions.assertThat(event.eventId()).isEqualTo(eventId);
-    Assertions.assertThat(event.commandId()).isEqualTo(commandId);
-    Assertions.assertThat(event.stateId()).isEqualTo(stateId);
-    Assertions.assertThat(event.sagaSource()).contains(sagaSource);
-    Assertions.assertThat(event.version()).isEqualTo(3);
-    Assertions.assertThat(partitionKey.value()).isEqualTo(stateId.value());
-    Assertions.assertThat(new TestEvent(new EventMeta(eventId, 0, stateId, commandId)).sagaSource()).isEmpty();
+    // Then
+    Assertions.assertThat(event.meta().eventId()).isEqualTo(eventId);
+    Assertions.assertThat(event.meta().commandId()).isEqualTo(commandId);
+    Assertions.assertThat(event.meta().stateId()).isEqualTo(stateId);
+    Assertions.assertThat(event.meta().version()).isEqualTo(3);
+    Assertions.assertThat(event.meta().sagaSource()).contains(sagaSource);
+    Assertions.assertThat(eventMeta(eventId, 0, stateId, commandId, null).sagaSource()).isEmpty();
+  }
+
+  private static EventMeta eventMeta(EventId eventId,
+                                     long version,
+                                     StateId stateId,
+                                     CommandId commandId,
+                                     EventId sagaSource) {
+    return EventMeta.builder()
+                    .eventId(eventId)
+                    .operationType(version == 0 ? OperationType.CREATION : OperationType.EVOLUTION)
+                    .version(version)
+                    .stateId(stateId)
+                    .commandId(commandId)
+                    .sagaSource(sagaSource)
+                    .build();
   }
 
   private record TestEvent(EventMeta meta) implements Event {}

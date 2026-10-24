@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.event.repo;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,11 @@ class MemEventRepo implements EventRepo {
 
   @Override
   public void append(Event event) {
-    db.computeIfPresent(event.stateId(), (_, v) -> {
+    db.computeIfPresent(event.meta().stateId(), (_, v) -> {
       v.add(event);
       return v;
     });
-    db.computeIfAbsent(event.stateId(), _ -> {
+    db.computeIfAbsent(event.meta().stateId(), _ -> {
       var list = new ArrayList<Event>();
       list.add(event);
       return list;
