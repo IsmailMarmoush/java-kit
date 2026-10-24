@@ -8,6 +8,7 @@ public interface Partitioned {
 
   /**
    * convenience method for readability
+   *
    * @return stateId
    */
   default StateId pKey() {

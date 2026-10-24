@@ -1,10 +1,10 @@
 package com.marmoush.javakit.eventsourcing.handler;
 
+import com.marmoush.javakit.eventsourcing.command.Command;
+import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
 import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
 import com.marmoush.javakit.eventsourcing.processor.Evolver;
-import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
 
 public interface CommandHandler {
   DecisionResult handle(Command command);

@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.handler;
 
-import com.marmoush.javakit.eventsourcing.command.repo.CommandPublisher;
 import com.marmoush.javakit.eventsourcing.command.Command;
+import com.marmoush.javakit.eventsourcing.command.repo.CommandPublisher;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.processor.Saga;
 

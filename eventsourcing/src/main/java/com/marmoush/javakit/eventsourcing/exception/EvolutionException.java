@@ -1,8 +1,8 @@
 package com.marmoush.javakit.eventsourcing.exception;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.state.State;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 
 public final class EvolutionException extends ESException {
 
