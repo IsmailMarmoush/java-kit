@@ -1,14 +1,15 @@
 package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.core.domain.Result;
+import com.marmoush.javakit.eventsourcing.OperationType;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.error.ESDomainError;
+import com.marmoush.javakit.eventsourcing.event.Event;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionFailure;
-import com.marmoush.javakit.eventsourcing.error.ESDomainError;
-import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.command.CommandId;
-import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,12 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 class DecisionResultTest {
-  private final Event event = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0), 0));
+  private final Event event = new StateCreated(EventMeta.builder()
+                                                        .eventId(EventId.of(0))
+                                                        .operationType(OperationType.CREATION)
+                                                        .stateId(StateId.of(0))
+                                                        .commandId(CommandId.of(0))
+                                                        .build());
   private final ESDomainError error = () -> "Rejected";
 
   @Test

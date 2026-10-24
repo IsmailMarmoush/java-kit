@@ -27,8 +27,8 @@ class StateIdTest {
   }
 
   @Test
-  void checkToString() {
-    Assertions.assertThat(new StateId("id")).hasToString("id");
+  void exposesValue() {
+    Assertions.assertThat(new StateId("id").value()).isEqualTo("id");
   }
 
   @Test
@@ -42,7 +42,8 @@ class StateIdTest {
     var id2 = StateId.of(uuidStr);
 
     // Then
-    Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
+    Assertions.assertThat(id1).isEqualTo(id2);
+    Assertions.assertThat(id2.value()).isEqualTo(uuidStr);
   }
 
   @Test

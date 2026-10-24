@@ -1,9 +1,10 @@
 package com.marmoush.javakit.eventsourcing.saga;
 
-import com.marmoush.javakit.eventsourcing.processor.Saga;
-import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
 import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.processor.Saga;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleSaga;
@@ -17,26 +18,36 @@ class SagaTest {
   private final Saga saga = new SimpleSaga(CommandId::randomUUID);
 
   @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent")
   void react() {
     // Given
     StateId bobId = StateId.of("BOB");
-    StateId aliceId = StateId.of("ALICE");
-
-    var eventMeta = new EventMeta(EventId.randomUUID(), bobId, CommandId.randomUUID());
-    var stateCreated = new StateCreated(eventMeta);
-    var eventMeta = new EventMeta(EventId.randomUUID(), 1, bobId, CommandId.randomUUID());
-    var stateChanged = new StateChanged(eventMeta);
+    var createdMeta = EventMeta.builder()
+                               .eventId(EventId.randomUUID())
+                               .operationType(OperationType.CREATION)
+                               .stateId(bobId)
+                               .commandId(CommandId.randomUUID())
+                               .build();
+    var stateCreated = new StateCreated(createdMeta);
+    var changedMeta = EventMeta.builder()
+                               .eventId(EventId.randomUUID())
+                               .operationType(OperationType.EVOLUTION)
+                               .version(1)
+                               .stateId(bobId)
+                               .commandId(CommandId.randomUUID())
+                               .build();
+    var stateChanged = new StateChanged(changedMeta);
 
     // When
-    var firstCommand = saga.react(aliceId, stateCreated).get();
-    var secondCommand = saga.react(aliceId, stateChanged).get();
+    var createdCommand = saga.react(stateCreated);
+    var changedCommand = saga.react(stateChanged);
 
     // Then
-    assertThat(firstCommand).isInstanceOf(ChangeState.class);
-    assertThat(firstCommand.meta().sagaSource()).contains(stateCreated.meta().eventId());
+    assertThat(createdCommand).isEmpty();
+    assertThat(changedCommand).hasValueSatisfying(command -> {
+      assertThat(command).isInstanceOf(ChangeState.class);
+      assertThat(command.meta().sagaSource()).contains(stateChanged.meta().eventId());
+    });
   }
 
 }
-
 

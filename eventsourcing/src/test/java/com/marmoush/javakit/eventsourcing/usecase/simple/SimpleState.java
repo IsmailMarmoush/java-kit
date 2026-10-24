@@ -4,7 +4,7 @@ import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.state.State;
 
 public record SimpleState(EventMeta meta) implements State {
-  public State withMeta(EventMeta meta) {
-    return new SimpleState(meta);
+  public SimpleState withMeta(EventMeta newMeta) {
+    return new SimpleState(newMeta);
   }
 }

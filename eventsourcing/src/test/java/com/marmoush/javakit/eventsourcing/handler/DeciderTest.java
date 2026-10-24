@@ -1,12 +1,13 @@
 package com.marmoush.javakit.eventsourcing.handler;
 
-import com.marmoush.javakit.eventsourcing.processor.Decider;
-import com.marmoush.javakit.eventsourcing.command.CommandMeta;
-import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandStateIdError;
+import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.exception.DecisionException;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.state.StateId;
-import com.marmoush.javakit.eventsourcing.state.StateMeta;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
@@ -16,47 +17,64 @@ import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DeciderTest {
-  private final Decider decider = new SimpleDecider(() -> EventId.of(0), () -> 0L);
+  private final Decider decider = new SimpleDecider(EventId::randomUUID);
 
   @Test
   void decideCreation() {
     // Given
-    var createState = new CreateState(new CommandMeta(CommandId.of(0), StateId.of(0)));
+    var createState = new CreateState(commandMeta(StateId.of(0)));
 
     // When
     var event = decider.decide(createState).get();
 
     // Then
     assertThat(event).isInstanceOf(StateCreated.class);
-    assertThat(event.version()).isZero();
+    assertThat(event.meta().version()).isZero();
   }
 
   @Test
   void decideEvolution() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateId.of(0)));
-    var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
+    var stateId = StateId.of(0);
+    var someState = new SimpleState(eventMeta(stateId, 0));
+    var changeState = new ChangeState(commandMeta(stateId));
 
     // When
     var event = decider.decide(someState, changeState).get();
 
     // Then
     assertThat(event).isInstanceOf(StateChanged.class);
-    assertThat(event.version()).isOne();
+    assertThat(event.meta().version()).isOne();
   }
 
   @Test
   void decideEvolutionFail() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateId.of("stateId")));
-    var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of("differentStateId")));
+    var someState = new SimpleState(eventMeta(StateId.of("stateId"), 0));
+    var changeState = new ChangeState(commandMeta(StateId.of("differentStateId")));
 
-    // When
-    var error = decider.decide(someState, changeState).error();
+    assertThatThrownBy(() -> decider.decide(someState, changeState)).isInstanceOf(DecisionException.class)
+                                                                    .hasMessageContaining("Command stateId mismatch");
+  }
 
-    // Then
-    assertThat(error).isInstanceOf(MismatchingCommandStateIdError.class);
+  private static CommandMeta commandMeta(StateId stateId) {
+    return CommandMeta.builder()
+                      .commandId(CommandId.of(0))
+                      .stateId(stateId)
+                      .operationType(OperationType.EVOLUTION)
+                      .build();
+  }
+
+  private static EventMeta eventMeta(StateId stateId, long version) {
+    return EventMeta.builder()
+                    .eventId(EventId.of(version))
+                    .operationType(OperationType.CREATION)
+                    .version(version)
+                    .stateId(stateId)
+                    .commandId(CommandId.of(0))
+                    .build();
   }
 }

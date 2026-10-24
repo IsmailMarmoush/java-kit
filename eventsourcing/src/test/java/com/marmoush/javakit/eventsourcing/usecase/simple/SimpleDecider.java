@@ -1,10 +1,10 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-import com.marmoush.javakit.eventsourcing.processor.Decider;
-import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
+import com.marmoush.javakit.eventsourcing.Id;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.exception.DecisionException;
-import com.marmoush.javakit.eventsourcing.Id;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
 import com.marmoush.javakit.eventsourcing.state.State;
 
 import java.util.function.Supplier;
@@ -25,7 +25,7 @@ public class SimpleDecider extends Decider {
   }
 
   @Override
-  public DecisionResult decide(State state, Command command) {
+  protected DecisionResult validatedDecide(State state, Command command) {
     if (state instanceof SimpleState) {
       if (command instanceof ChangeState) {
         var eventMeta = this.eventMeta(state, command);

@@ -1,8 +1,10 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.eventsourcing.command.CommandMeta;
+import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
-import com.marmoush.javakit.eventsourcing.state.StateMeta;
+import com.marmoush.javakit.eventsourcing.command.CommandMeta;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Debit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.DebitRejected;
@@ -20,15 +22,26 @@ class AccountDeciderTest {
   void debit(int debitAmount) {
     // Given
     int balance = 500;
-    var openAccount = new OpenAccount(new StateMeta(TestData.ALICE_ID), TestData.ALICE, balance);
-    var debit = new Debit(new CommandMeta(CommandId.randomUUID(), TestData.ALICE_ID), TestData.BOB_ID, debitAmount);
+    var stateMeta = EventMeta.builder()
+                             .eventId(EventId.of("created"))
+                             .operationType(OperationType.CREATION)
+                             .stateId(BankingFixtures.ALICE_ID)
+                             .commandId(CommandId.of("create"))
+                             .build();
+    var openAccount = new OpenAccount(stateMeta, BankingFixtures.ALICE, balance);
+    var commandMeta = CommandMeta.builder()
+                                 .commandId(CommandId.randomUUID())
+                                 .stateId(BankingFixtures.ALICE_ID)
+                                 .operationType(OperationType.EVOLUTION)
+                                 .build();
+    var debit = new Debit(commandMeta, BankingFixtures.BOB_ID, debitAmount);
 
     // When
-    var event = TestData.decider.decide(openAccount, debit).get();
+    var event = new AccountDecider(() -> BankingFixtures.ALICE_ID).decide(openAccount, debit).get();
     var accountEvent = (AccountEvent) event;
 
     // Then
-    assertThat(accountEvent.accountId()).isEqualTo(TestData.ALICE_ID);
+    assertThat(accountEvent.meta().stateId()).isEqualTo(BankingFixtures.ALICE_ID);
     if (debitAmount < balance) {
       assertThat(event).isInstanceOf(Debited.class);
     } else {
