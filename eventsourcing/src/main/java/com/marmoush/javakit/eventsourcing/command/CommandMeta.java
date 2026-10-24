@@ -1,75 +1,52 @@
 package com.marmoush.javakit.eventsourcing.command;
 
-import com.marmoush.javakit.eventsourcing.Partitioned;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.PartitionId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.OperationType;
+import com.marmoush.javakit.eventsourcing.SagaSourced;
+import com.marmoush.javakit.eventsourcing.event.EventId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CommandMeta implements Partitioned, Serializable {
+@Getter
+@EqualsAndHashCode
+@ToString
+@Accessors(fluent = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class CommandMeta implements SagaSourced, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
-  private final CommandId commandId;
-  private final StateId stateId;
-  private final long timestamp;
-  private final EventId sagaSource;
 
-  public CommandMeta(CommandId commandId, StateId stateId) {
-    this(commandId, stateId, System.currentTimeMillis());
-  }
+  CommandId commandId;
+  OperationType operationType;
+  StateId stateId;
+  @Getter(AccessLevel.NONE)
+  EventId sagaSource;
 
-  public CommandMeta(CommandId commandId, StateId stateId, long timestamp) {
-    this(commandId, stateId, timestamp, null);
-  }
-
-  public CommandMeta(CommandId commandId, StateId stateId, long timestamp, EventId sagaSource) {
+  @Builder
+  public CommandMeta(@NonNull CommandId commandId,
+                     @NonNull StateId stateId,
+                     @NonNull OperationType operationType,
+                     EventId sagaSource) {
     this.commandId = Objects.requireNonNull(commandId);
-    this.stateId = Objects.requireNonNull(stateId);
-    this.timestamp = timestamp;
     this.sagaSource = sagaSource;
+    this.stateId = stateId;
+    this.operationType = operationType;
   }
 
   @Override
-  public PartitionId pKey() {
-    return PartitionId.of(stateId);
-  }
-
-  public CommandId commandId() {return commandId;}
-
-  public StateId stateId() {return stateId;}
-
-  public long timestamp() {return timestamp;}
-
-  public Optional<EventId> sagaSource() {return Optional.ofNullable(sagaSource);}
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
-    CommandMeta that = (CommandMeta) o;
-    return timestamp == that.timestamp
-           && Objects.equals(commandId, that.commandId)
-           && Objects.equals(stateId,
-                             that.stateId)
-           && Objects.equals(sagaSource, that.sagaSource);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(commandId, stateId, timestamp, sagaSource);
-  }
-
-  @Override
-  public String toString() {
-    String msg = "CommandMeta{commandId=%s, stateId=%s, timestamp=%d, sagaSource=%s}";
-    return msg.formatted(commandId, stateId, timestamp, sagaSource);
+  public Optional<EventId> sagaSource() {
+    return Optional.ofNullable(sagaSource);
   }
 }
 

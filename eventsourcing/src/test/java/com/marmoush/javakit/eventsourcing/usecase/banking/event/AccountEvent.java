@@ -1,7 +1,7 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking.event;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 
 public sealed interface AccountEvent extends Event permits AccountClosed,
                                                            AccountCreated,

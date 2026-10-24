@@ -1,15 +1,15 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.eventsourcing.Decider;
-import com.marmoush.javakit.eventsourcing.DecisionResult;
-import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionEvent;
-import com.marmoush.javakit.eventsourcing.DecisionResult.DecisionFailure;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionEvent;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.error.MismatchingCommandError;
+import com.marmoush.javakit.eventsourcing.exception.MismatchingCommandError;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.exception.UnhandledCommandTypeException;
+import com.marmoush.javakit.eventsourcing.exception.UnhandledTypeException;
 import com.marmoush.javakit.eventsourcing.exception.UnhandledStateTypeException;
-import com.marmoush.javakit.eventsourcing.id.EventId;
+import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.AccountCommand;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ChangeName;
@@ -33,24 +33,25 @@ import com.marmoush.javakit.eventsourcing.usecase.banking.state.OpenAccount;
 
 import java.util.function.Supplier;
 
-public record AccountDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> timeSupplier) implements Decider {
+public record AccountDecider(Supplier<EventId> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public DecisionResult decide(Command command, EventMeta eventMeta) {
+  public DecisionResult decide(Command command) {
     if (command instanceof AccountCommand accountCommand) {
+      var eventMeta = this.eventMeta(accountCommand);
       return decide(accountCommand, eventMeta);
     } else {
-      throw UnhandledCommandTypeException.of(command);
+      throw UnhandledTypeException.of(command);
     }
   }
 
   @Override
-  public DecisionResult decide(State state, Command command, EventMeta eventMeta) {
+  public DecisionResult validatedDecide(State state, Command command) {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
         return decide(account, accountCommand, eventMeta);
       } else {
-        throw UnhandledCommandTypeException.of(command);
+        throw UnhandledTypeException.of(command);
       }
     } else {
       throw UnhandledStateTypeException.of(state);
@@ -61,7 +62,7 @@ public record AccountDecider(Supplier<EventId> eventIdSupplier, Supplier<Long> t
   private DecisionResult decide(AccountCommand command, EventMeta newEventMeta) {
     return switch (command) {
       case CreateAccount cmd -> DecisionEvent.of(new AccountCreated(newEventMeta, cmd.accountName(), cmd.balance()));
-      default -> throw UnhandledCommandTypeException.of(command);
+      default -> throw UnhandledTypeException.of(command);
     };
   }
 

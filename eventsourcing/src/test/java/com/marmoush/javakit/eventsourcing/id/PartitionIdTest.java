@@ -1,5 +1,7 @@
 package com.marmoush.javakit.eventsourcing.id;
 
+import com.marmoush.javakit.eventsourcing.Id;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

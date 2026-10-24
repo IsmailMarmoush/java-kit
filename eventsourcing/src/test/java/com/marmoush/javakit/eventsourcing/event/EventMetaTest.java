@@ -1,8 +1,7 @@
 package com.marmoush.javakit.eventsourcing.event;
 
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.EventId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.command.CommandId;
+import com.marmoush.javakit.eventsourcing.state.StateId;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -60,7 +59,7 @@ class EventMetaTest {
     Assertions.assertThat(meta.version()).isEqualTo(7);
     Assertions.assertThat(meta.stateId()).isEqualTo(stateId);
     Assertions.assertThat(meta.commandId()).isEqualTo(commandId);
-    Assertions.assertThat(meta.timestamp()).isEqualTo(89L);
+    Assertions.assertThat(meta.createdAt()).isEqualTo(89L);
     Assertions.assertThat(meta.sagaSource()).contains(sagaSource);
     Assertions.assertThat(partitionKey.value()).isEqualTo(stateId.value());
     Assertions.assertThat(meta.toString())
@@ -98,9 +97,9 @@ class EventMetaTest {
     var timestampMeta = new EventMeta(EventId.of(2), 0, stateId, CommandId.of(2), 99L);
 
     //then
-    Assertions.assertThat(defaultTimestampMeta.timestamp()).isBetween(before, System.currentTimeMillis());
+    Assertions.assertThat(defaultTimestampMeta.createdAt()).isBetween(before, System.currentTimeMillis());
     Assertions.assertThat(defaultTimestampMeta.sagaSource()).isEmpty();
-    Assertions.assertThat(timestampMeta.timestamp()).isEqualTo(99L);
+    Assertions.assertThat(timestampMeta.createdAt()).isEqualTo(99L);
     Assertions.assertThat(timestampMeta.sagaSource()).isEmpty();
     Assertions.assertThatNullPointerException().isThrownBy(() -> new EventMeta(null, 0, stateId, CommandId.of(1)));
     Assertions.assertThatNullPointerException()

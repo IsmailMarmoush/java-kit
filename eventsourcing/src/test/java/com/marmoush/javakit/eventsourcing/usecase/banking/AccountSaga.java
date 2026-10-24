@@ -1,9 +1,10 @@
 package com.marmoush.javakit.eventsourcing.usecase.banking;
 
-import com.marmoush.javakit.eventsourcing.Saga;
+import com.marmoush.javakit.eventsourcing.processor.Saga;
 import com.marmoush.javakit.eventsourcing.command.Command;
+import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
+import com.marmoush.javakit.eventsourcing.Id;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.ConfirmDebit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Credit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
@@ -14,7 +15,7 @@ import com.marmoush.javakit.eventsourcing.usecase.banking.event.Debited;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public record AccountSaga(Supplier<CommandId> commandIdSupplier, Supplier<Long> timeSupplier) implements Saga {
+public record AccountSaga(Supplier<Id> IdSupplier) implements Saga {
 
   @Override
   public Optional<Command> react(Event event) {
@@ -37,5 +38,25 @@ public record AccountSaga(Supplier<CommandId> commandIdSupplier, Supplier<Long> 
                                                              rejected.amount()));
       default -> Optional.empty();
     };
+  }
+
+  @Override
+  protected Optional<Command> react(Event event, CommandMeta commandMeta) {
+    return Optional.empty();
+  }
+
+  @Override
+  protected Optional<Command> react(Event event, CommandMeta commandMeta) {
+    return Optional.empty();
+  }
+
+  @Override
+  protected Optional<Command> react(Event event, CommandMeta commandMeta) {
+    return Optional.empty();
+  }
+
+  @Override
+  protected Optional<Command> react(Event event, CommandMeta commandMeta) {
+    return Optional.empty();
   }
 }
