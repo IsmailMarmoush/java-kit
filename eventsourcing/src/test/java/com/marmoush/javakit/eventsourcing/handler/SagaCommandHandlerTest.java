@@ -1,7 +1,6 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.eventsourcing.processor.Saga;
-import com.marmoush.javakit.eventsourcing.processor.SagaHandler;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
@@ -21,7 +20,7 @@ import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SagaHandlerTest {
+class SagaCommandHandlerTest {
   private final Event event = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0)));
 
   @Test

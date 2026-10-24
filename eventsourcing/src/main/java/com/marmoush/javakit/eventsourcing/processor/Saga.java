@@ -14,9 +14,9 @@ public abstract class Saga {
     IdSupplier = idSupplier;
   }
 
-  protected abstract Optional<Command> react(Event event);
+  public abstract Optional<Command> react(Event event);
 
-  public Supplier<Id> idSupplier() {
+  protected Supplier<Id> idSupplier() {
     return IdSupplier;
   }
 }

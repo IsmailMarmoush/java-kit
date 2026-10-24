@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.processor.Evolver;
@@ -14,7 +14,7 @@ public class DomainAggregateFactory implements AggregateFactory {
   private final EventRepo eventRepo = EventRepo.inMemory();
 
   @Override
-  public Aggregate create(StateId stateId) {
-    return Aggregate.create(stateId, decider, evolver, eventRepo);
+  public CommandHandler create(StateId stateId) {
+    return CommandHandler.create(stateId, decider, evolver, eventRepo);
   }
 }

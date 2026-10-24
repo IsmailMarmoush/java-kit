@@ -2,7 +2,7 @@ module com.marmoush.javakit.eventsourcing {
   requires com.marmoush.javakit.core;
   requires org.slf4j;
   requires static lombok;
-  exports com.marmoush.javakit.eventsourcing.aggregate;
+  exports com.marmoush.javakit.eventsourcing.handler;
   exports com.marmoush.javakit.eventsourcing.command;
   exports com.marmoush.javakit.eventsourcing.event;
   exports com.marmoush.javakit.eventsourcing.event.repo;

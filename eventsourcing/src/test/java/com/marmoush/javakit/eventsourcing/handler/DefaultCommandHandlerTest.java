@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.error.DuplicateCommand;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultAggregateTest {
+public class DefaultCommandHandlerTest {
 
   @Test
   void handlesCreationAndSubsequentEvolution() {
@@ -124,9 +124,9 @@ public class DefaultAggregateTest {
     assertThat(eventRepo.size(stateId)).isEqualTo(3);
   }
 
-  private static DefaultAggregate newAggregate(StateId stateId, EventRepo eventRepo) {
+  private static DefaultCommandHandler newAggregate(StateId stateId, EventRepo eventRepo) {
     var decider = new SimpleDecider(EventId::randomUUID, () -> 0L);
-    return new DefaultAggregate(stateId, decider, new SimpleEvolver(), eventRepo);
+    return new DefaultCommandHandler(stateId, decider, new SimpleEvolver(), eventRepo);
   }
 
   @SuppressWarnings("SameParameterValue")

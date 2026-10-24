@@ -1,6 +1,6 @@
 package com.marmoush.javakit.eventsourcing;
 
-import com.marmoush.javakit.eventsourcing.aggregate.Aggregate;
+import com.marmoush.javakit.eventsourcing.handler.CommandHandler;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.state.StateId;
@@ -15,7 +15,7 @@ public class Utils {
     return new SimpleDecider(EventId::randomUUID, () -> 0L);
   }
 
-  public static Aggregate simpleAggregate(StateId stateId) {
-    return Aggregate.create(stateId, Utils.simpleDecider(), new SimpleEvolver(), EventRepo.inMemory());
+  public static CommandHandler simpleAggregate(StateId stateId) {
+    return CommandHandler.create(stateId, Utils.simpleDecider(), new SimpleEvolver(), EventRepo.inMemory());
   }
 }

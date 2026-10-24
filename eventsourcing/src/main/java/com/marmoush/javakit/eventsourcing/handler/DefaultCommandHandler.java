@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.Event;
@@ -11,15 +11,15 @@ import com.marmoush.javakit.eventsourcing.state.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class DefaultAggregate implements Aggregate {
-  private static final Logger log = LoggerFactory.getLogger(DefaultAggregate.class.getName());
+class DefaultCommandHandler implements CommandHandler {
+  private static final Logger log = LoggerFactory.getLogger(DefaultCommandHandler.class.getName());
 
   // Rules
   private final Decider decider;
   private final Evolver evolver;
   private final EventRepo eventRepo;
 
-  public DefaultAggregate(Decider decider, Evolver evolver, EventRepo eventRepo) {
+  public DefaultCommandHandler(Decider decider, Evolver evolver, EventRepo eventRepo) {
     // Rules
     this.decider = decider;
     this.evolver = evolver;

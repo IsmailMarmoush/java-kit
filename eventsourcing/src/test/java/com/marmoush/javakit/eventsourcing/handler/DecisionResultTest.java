@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.aggregate;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.core.domain.Result;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult;

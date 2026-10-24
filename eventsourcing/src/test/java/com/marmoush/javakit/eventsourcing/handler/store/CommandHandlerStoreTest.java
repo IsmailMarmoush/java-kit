@@ -1,7 +1,7 @@
-package com.marmoush.javakit.eventsourcing.aggregate.store;
+package com.marmoush.javakit.eventsourcing.handler.store;
 
 import com.marmoush.javakit.eventsourcing.Utils;
-import com.marmoush.javakit.eventsourcing.aggregate.Aggregate;
+import com.marmoush.javakit.eventsourcing.handler.CommandHandler;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
@@ -17,7 +17,7 @@ import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AggregateStoreTest {
+class CommandHandlerStoreTest {
   public static final int STATES_SIZE = 100;
 
   @ParameterizedTest
@@ -35,7 +35,7 @@ class AggregateStoreTest {
     //given
     var stateId = StateId.of("state");
     var aggregate = Utils.simpleAggregate(stateId);
-    var backingMap = new java.util.HashMap<StateId, Aggregate>();
+    var backingMap = new java.util.HashMap<StateId, CommandHandler>();
     var store = AggregateStore.mapStore(backingMap);
     store.computeIfAbsent(stateId, Utils::simpleAggregate);
     store.computeIfAbsent(stateId, ignored -> {
