@@ -1,6 +1,6 @@
 package com.marmoush.javakit.eventsourcing;
 
-import com.marmoush.javakit.eventsourcing.command.CreationCommand;
+import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.id.Id;
 
@@ -14,7 +14,7 @@ public abstract class Saga {
     IdSupplier = idSupplier;
   }
 
-  protected abstract Optional<CreationCommand> react(Event event);
+  protected abstract Optional<Command> react(Event event);
 
   public Supplier<Id> idSupplier() {
     return IdSupplier;
