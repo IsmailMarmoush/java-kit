@@ -1,6 +1,6 @@
 package com.marmoush.javakit.eventsourcing.usecase.simple;
 
-import com.marmoush.javakit.eventsourcing.command.Command;
-import com.marmoush.javakit.eventsourcing.command.CommandMeta;
+import com.marmoush.javakit.eventsourcing.command.EvolutionCommand;
+import com.marmoush.javakit.eventsourcing.command.EvolutionCommandMeta;
 
-public record ChangeState(CommandMeta meta) implements Command {}
+public record ChangeState(EvolutionCommandMeta meta) implements EvolutionCommand {}

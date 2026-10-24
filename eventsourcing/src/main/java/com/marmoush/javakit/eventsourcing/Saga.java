@@ -1,23 +1,22 @@
 package com.marmoush.javakit.eventsourcing;
 
-import com.marmoush.javakit.eventsourcing.command.Command;
-
-import com.marmoush.javakit.eventsourcing.command.CommandMeta;
+import com.marmoush.javakit.eventsourcing.command.CreationCommand;
 import com.marmoush.javakit.eventsourcing.event.Event;
-import com.marmoush.javakit.eventsourcing.id.CommandId;
-import com.marmoush.javakit.eventsourcing.id.StateId;
+import com.marmoush.javakit.eventsourcing.id.Id;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public interface Saga {
-  Supplier<CommandId> commandIdSupplier();
+public abstract class Saga {
+  private final Supplier<Id> IdSupplier;
 
-  Supplier<Long> timeSupplier();
+  public Saga(Supplier<Id> idSupplier) {
+    IdSupplier = idSupplier;
+  }
 
-  Optional<Command> react(Event event);
+  protected abstract Optional<CreationCommand> react(Event event);
 
-  default CommandMeta commandMeta(StateId stateId, Event event) {
-    return new CommandMeta(commandIdSupplier().get(), stateId, timeSupplier().get(), event.meta().eventId());
+  public Supplier<Id> idSupplier() {
+    return IdSupplier;
   }
 }

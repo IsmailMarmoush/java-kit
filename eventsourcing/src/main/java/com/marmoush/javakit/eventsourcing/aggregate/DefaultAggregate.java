@@ -7,11 +7,11 @@ import com.marmoush.javakit.eventsourcing.Evolver;
 import com.marmoush.javakit.eventsourcing.command.Command;
 import com.marmoush.javakit.eventsourcing.command.CreationCommand;
 import com.marmoush.javakit.eventsourcing.command.EvolutionCommand;
-import com.marmoush.javakit.eventsourcing.error.UnhandledCommandType;
 import com.marmoush.javakit.eventsourcing.event.CreationEvent;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EvolutionEvent;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
+import com.marmoush.javakit.eventsourcing.exception.DecisionException;
 import com.marmoush.javakit.eventsourcing.exception.EvolutionException;
 import com.marmoush.javakit.eventsourcing.state.State;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ class DefaultAggregate implements Aggregate {
     var result = switch (command) {
       case CreationCommand cc -> handle(cc);
       case EvolutionCommand ec -> handle(ec);
-      default -> DecisionResult.failure(UnhandledCommandType.of(command));
+      default -> throw DecisionException.unhandledCommandType(command);
     };
     if (result instanceof DecisionEvent(Event event)) {
       eventRepo.append(event);
@@ -54,20 +54,18 @@ class DefaultAggregate implements Aggregate {
   public DecisionResult handle(EvolutionCommand evolutionCommand) {
     var events = eventRepo.fetch(evolutionCommand.meta().stateId());
     State state = null;
-    long eventVersion = 0;
     for (Event event : events) {
       state = switch (event) {
         case CreationEvent creationEvent -> evolve(creationEvent);
         case EvolutionEvent evolutionEvent -> evolve(state, evolutionEvent);
         default -> throw EvolutionException.unhandledEventType(event);
       };
-      eventVersion = event.version();
     }
-    return decider.decide(state, evolutionCommand, eventVersion);
+    return decider.decide(state, evolutionCommand);
   }
 
   State evolve(CreationEvent creationEvent) {
-    return evolver.evolve(creationEvent);
+    return evolver.create(creationEvent);
   }
 
   State evolve(State state, EvolutionEvent evolutionEvent) {

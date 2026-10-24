@@ -56,7 +56,7 @@ class SagaHandlerTest {
   private static Saga sagaReacting(Function<Event, Optional<Command>> reaction) {
     return new Saga() {
       @Override
-      public Supplier<CommandId> commandIdSupplier() {
+      public Supplier<CommandId> IdSupplier() {
         return () -> CommandId.of(0);
       }
 

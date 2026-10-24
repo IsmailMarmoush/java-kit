@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class EventMeta implements Partitioned, Versioned, SagaSourced, Serializable {
+public class EventMeta implements Partitioned, Versioned, SagaSourced, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
   private final EventId eventId;

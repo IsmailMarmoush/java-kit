@@ -25,7 +25,7 @@ class EvolverTest {
     var stateCreated = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0)));
 
     // When
-    var event = evolver.evolve(stateCreated);
+    var event = evolver.create(stateCreated);
 
     // Then
     assertThat(event).isInstanceOf(SimpleState.class);

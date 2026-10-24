@@ -24,6 +24,11 @@ public final class EvolutionException extends ESException {
     return new DecisionException(message);
   }
 
+  public static DecisionException unhandledStateType(State state) {
+    var message = "Unhandled state type: " + state.getClass().getName();
+    return new DecisionException(message);
+  }
+
   public static EvolutionException invalidEventType(EvolutionEvent evolutionEvent, State state) {
     var message = "Event cannot be applied to state: stateType=%s, eventType=%s";
     return new EvolutionException(message.formatted(state.getClass().getName(), evolutionEvent.getClass().getName()));
