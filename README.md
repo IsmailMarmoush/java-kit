@@ -72,7 +72,7 @@ Both metadata types include a timestamp and optional `sagaSource`. IDs are disti
 `EventRepo.inMemory()` implementation is process-local; applications needing durable storage must provide and configure
 their own persistence integration. `Aggregates` coordinates aggregate lookup through an `AggregateStore`.
 
-`SagaHandler` delegates to a saga and publishes a command when the saga returns one. It uses the supplied
+`DefaultSagaHandler` delegates to a saga and publishes a command when the saga returns one. It uses the supplied
 `CommandPublisher`; transport, retries, and durable delivery are the caller's responsibility.
 
 Commands and events implement `Partitioned`. Their partition key is derived from their state ID, so related messages

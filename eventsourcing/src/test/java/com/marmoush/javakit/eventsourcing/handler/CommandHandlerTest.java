@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.processor;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.Command;
@@ -7,18 +7,22 @@ import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
-import com.marmoush.javakit.eventsourcing.handler.DefaultCommandHandler;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
+import com.marmoush.javakit.eventsourcing.processor.DecisionLogic;
+import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
+import com.marmoush.javakit.eventsourcing.processor.Evolver;
 import com.marmoush.javakit.eventsourcing.state.State;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecisionLogic;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolutionLogic;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DefaultCommandHandlerTest {
+class CommandHandlerTest {
 
   @Test
   void appendsTheEventProducedForANewState() {
@@ -31,7 +35,7 @@ class DefaultCommandHandlerTest {
     var created = aggregate.handle(command(0, stateId));
 
     // Then
-    assertThat(created.get()).isInstanceOf(StateCreated.class);
+    Assertions.assertThat(created.get()).isInstanceOf(StateCreated.class);
     assertThat(eventRepo.size(stateId)).isOne();
   }
 
@@ -50,9 +54,9 @@ class DefaultCommandHandlerTest {
         return DecisionResult.failure(() -> "Rejected");
       }
     };
-    var handler = new DefaultCommandHandler(new Decider(rejectingLogic, EventId::randomUUID),
-                                            new Evolver(new SimpleEvolutionLogic()),
-                                            eventRepo);
+    var handler = CommandHandler.create(new Decider(rejectingLogic, EventId::randomUUID),
+                                        new Evolver(new SimpleEvolutionLogic()),
+                                        eventRepo);
 
     var result = handler.handle(command(1, stateId));
 
@@ -60,10 +64,10 @@ class DefaultCommandHandlerTest {
     assertThat(eventRepo.fetch(stateId)).isEmpty();
   }
 
-  private static DefaultCommandHandler newAggregate(StateId stateId, EventRepo eventRepo) {
-    return new DefaultCommandHandler(new Decider(new SimpleDecisionLogic(), () -> stateId),
-                                     new Evolver(new SimpleEvolutionLogic()),
-                                     eventRepo);
+  private static CommandHandler newAggregate(StateId stateId, EventRepo eventRepo) {
+    return CommandHandler.create(new Decider(new SimpleDecisionLogic(), () -> stateId),
+                                 new Evolver(new SimpleEvolutionLogic()),
+                                 eventRepo);
   }
 
   @SuppressWarnings("SameParameterValue")

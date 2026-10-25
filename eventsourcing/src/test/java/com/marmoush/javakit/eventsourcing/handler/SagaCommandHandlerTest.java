@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.processor;
+package com.marmoush.javakit.eventsourcing.handler;
 
 import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.Command;
@@ -7,7 +7,7 @@ import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.handler.SagaHandler;
+import com.marmoush.javakit.eventsourcing.processor.Saga;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
@@ -37,7 +37,7 @@ class SagaCommandHandlerTest {
                                                  .operationType(OperationType.EVOLUTION)
                                                  .build());
     List<Command> publishedCommands = new ArrayList<>();
-    var handler = new SagaHandler(sagaReacting(ignored -> Optional.of(command)), publishedCommands::add);
+    var handler = SagaHandler.create(sagaReacting(ignored -> Optional.of(command)), publishedCommands::add);
 
     // When
     var result = handler.react(event);
@@ -51,7 +51,7 @@ class SagaCommandHandlerTest {
   void doesNotPublishWhenSagaProducesNoCommand() {
     // Given
     List<Command> publishedCommands = new ArrayList<>();
-    var handler = new SagaHandler(sagaReacting(ignored -> Optional.empty()), publishedCommands::add);
+    var handler = SagaHandler.create(sagaReacting(ignored -> Optional.empty()), publishedCommands::add);
 
     // When
     var result = handler.react(event);
