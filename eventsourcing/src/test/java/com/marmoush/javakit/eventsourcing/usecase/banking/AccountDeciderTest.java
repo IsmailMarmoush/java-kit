@@ -5,6 +5,7 @@ import com.marmoush.javakit.eventsourcing.command.CommandId;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Debit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.DebitRejected;
@@ -37,7 +38,8 @@ class AccountDeciderTest {
     var debit = new Debit(commandMeta, BankingFixtures.BOB_ID, debitAmount);
 
     // When
-    var event = new AccountDecider(() -> BankingFixtures.ALICE_ID).decide(openAccount, debit).get();
+    var event = new Decider(new AccountDecisionLogic(), () -> BankingFixtures.ALICE_ID).decide(openAccount, debit)
+                                                                                       .get();
     var accountEvent = (AccountEvent) event;
 
     // Then

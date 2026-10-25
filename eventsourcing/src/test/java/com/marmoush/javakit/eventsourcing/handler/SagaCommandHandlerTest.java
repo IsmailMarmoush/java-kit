@@ -37,7 +37,7 @@ class SagaCommandHandlerTest {
                                                  .operationType(OperationType.EVOLUTION)
                                                  .build());
     List<Command> publishedCommands = new ArrayList<>();
-    var handler = new SagaHandler(sagaReacting(ignored -> Optional.of(command)), publishedCommands::add);
+    var handler = SagaHandler.create(sagaReacting(ignored -> Optional.of(command)), publishedCommands::add);
 
     // When
     var result = handler.react(event);
@@ -51,7 +51,7 @@ class SagaCommandHandlerTest {
   void doesNotPublishWhenSagaProducesNoCommand() {
     // Given
     List<Command> publishedCommands = new ArrayList<>();
-    var handler = new SagaHandler(sagaReacting(ignored -> Optional.empty()), publishedCommands::add);
+    var handler = SagaHandler.create(sagaReacting(ignored -> Optional.empty()), publishedCommands::add);
 
     // When
     var result = handler.react(event);

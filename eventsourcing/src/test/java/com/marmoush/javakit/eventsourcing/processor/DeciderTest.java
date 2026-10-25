@@ -1,26 +1,29 @@
-package com.marmoush.javakit.eventsourcing.handler;
+package com.marmoush.javakit.eventsourcing.processor;
 
+import com.marmoush.javakit.eventsourcing.Id;
 import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.exception.DecisionException;
-import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
-import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
+import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecisionLogic;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateChanged;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DeciderTest {
-  private final Decider decider = new SimpleDecider(EventId::randomUUID);
+  private final Decider decider = new Decider(new SimpleDecisionLogic(), EventId::randomUUID);
 
   @Test
   void decideCreation() {
@@ -33,6 +36,28 @@ class DeciderTest {
     // Then
     assertThat(event).isInstanceOf(StateCreated.class);
     assertThat(event.meta().version()).isZero();
+  }
+
+  @Test
+  void creationMetadataUsesSuppliedIdsAndPreservesCommandMetadata() {
+    var stateId = StateId.of("original-state");
+    var sagaSource = EventId.of("saga-source");
+    var command = new CreateState(CommandMeta.builder()
+                                             .commandId(CommandId.of("command"))
+                                             .stateId(stateId)
+                                             .operationType(OperationType.CREATION)
+                                             .sagaSource(sagaSource)
+                                             .build());
+    Iterator<Id> ids = List.<Id>of(EventId.of("new-event"), StateId.of("new-state")).iterator();
+    var deterministicDecider = new Decider(new SimpleDecisionLogic(), ids::next);
+
+    var event = deterministicDecider.decide(command).get();
+
+    assertThat(event.meta().eventId()).isEqualTo(EventId.of("new-event"));
+    assertThat(event.meta().stateId()).isEqualTo(StateId.of("new-state"));
+    assertThat(event.meta().commandId()).isEqualTo(command.meta().commandId());
+    assertThat(event.meta().operationType()).isEqualTo(command.meta().operationType());
+    assertThat(event.meta().sagaSource()).contains(sagaSource);
   }
 
   @Test
