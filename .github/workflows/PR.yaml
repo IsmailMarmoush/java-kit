@@ -46,7 +46,6 @@ jobs:
           -Dsonar.projectKey=ismailmarmoush_java-kit
 
       - uses: ./.github/actions/jacoco-comment
-        if: always()
         with:
           reports: |
             core=core/target/site/jacoco/jacoco.xml
