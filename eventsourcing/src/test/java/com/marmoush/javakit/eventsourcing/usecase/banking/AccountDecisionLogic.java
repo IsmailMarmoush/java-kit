@@ -45,7 +45,7 @@ public class AccountDecisionLogic implements DecisionLogic {
       case Credit cmd -> new Credited(meta, cmd.debitedAcc(), account.balance());
       case Debit cmd -> account.canDebit(cmd.amount()) ? new Debited(meta, cmd.creditedAcc(), cmd.amount())
                                                        : new DebitRejected(meta);
-      case CloseAccount cmd -> new AccountClosed(meta);
+      case CloseAccount _ -> new AccountClosed(meta);
       case CreateAccount cmd -> throw DecisionException.invalidCommand(cmd, account);
     };
   }

@@ -15,7 +15,6 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ import java.util.Optional;
 @ToString
 @Accessors(fluent = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CommandMeta implements SagaSourced, Partitioned, Serializable {
+public class CommandMeta implements SagaSourced, Partitioned {
   @Serial
   private static final long serialVersionUID = 0L;
 

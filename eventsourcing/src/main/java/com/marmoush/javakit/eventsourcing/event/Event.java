@@ -1,7 +1,5 @@
 package com.marmoush.javakit.eventsourcing.event;
 
-import java.io.Serializable;
-
-public interface Event extends Serializable {
+public interface Event {
   EventMeta meta();
 }
