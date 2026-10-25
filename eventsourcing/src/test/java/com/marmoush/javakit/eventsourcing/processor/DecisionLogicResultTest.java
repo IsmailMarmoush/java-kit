@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.handler;
+package com.marmoush.javakit.eventsourcing.processor;
 
 import com.marmoush.javakit.core.domain.Result;
 import com.marmoush.javakit.eventsourcing.OperationType;
@@ -7,7 +7,6 @@ import com.marmoush.javakit.eventsourcing.error.ESDomainError;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.processor.DecisionResult;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionEvent;
 import com.marmoush.javakit.eventsourcing.processor.DecisionResult.DecisionFailure;
 import com.marmoush.javakit.eventsourcing.state.StateId;

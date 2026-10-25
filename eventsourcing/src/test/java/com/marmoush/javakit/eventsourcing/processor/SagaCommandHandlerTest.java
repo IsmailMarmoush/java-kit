@@ -1,4 +1,4 @@
-package com.marmoush.javakit.eventsourcing.handler;
+package com.marmoush.javakit.eventsourcing.processor;
 
 import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.Command;
@@ -7,7 +7,7 @@ import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
-import com.marmoush.javakit.eventsourcing.processor.Saga;
+import com.marmoush.javakit.eventsourcing.handler.SagaHandler;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;

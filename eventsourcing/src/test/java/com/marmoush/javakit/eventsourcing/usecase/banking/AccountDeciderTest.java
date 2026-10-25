@@ -38,7 +38,8 @@ class AccountDeciderTest {
     var debit = new Debit(commandMeta, BankingFixtures.BOB_ID, debitAmount);
 
     // When
-    var event = new Decider(new AccountDecisionLogic(), () -> BankingFixtures.ALICE_ID).decide(openAccount, debit).get();
+    var event = new Decider(new AccountDecisionLogic(), () -> BankingFixtures.ALICE_ID).decide(openAccount, debit)
+                                                                                       .get();
     var accountEvent = (AccountEvent) event;
 
     // Then
