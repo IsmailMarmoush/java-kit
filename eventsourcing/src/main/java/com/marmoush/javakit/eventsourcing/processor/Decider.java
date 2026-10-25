@@ -10,10 +10,12 @@ import com.marmoush.javakit.eventsourcing.state.StateId;
 
 import java.util.function.Supplier;
 
-public abstract class Decider {
+public class Decider {
+  private final DecisionLogic decisionLogic;
   private final Supplier<Id> idSupplier;
 
-  protected Decider(Supplier<Id> idSupplier) {
+  public Decider(DecisionLogic decisionLogic, Supplier<Id> idSupplier) {
+    this.decisionLogic = decisionLogic;
     this.idSupplier = idSupplier;
   }
 
@@ -21,7 +23,9 @@ public abstract class Decider {
    * @param command the incoming command
    * @return a new Event with eventMeta as its value
    */
-  public abstract DecisionResult decide(Command command);
+  public final DecisionResult decide(Command command) {
+    return this.decisionLogic.decide(command, eventMeta(command));
+  }
 
   /**
    * @param state   the initial state
@@ -30,16 +34,15 @@ public abstract class Decider {
    *
    */
   public final DecisionResult decide(State state, Command command) {
+    validate(state, command);
+    return decisionLogic.decide(state, command, eventMeta(state, command));
+  }
+
+  private void validate(State state, Command command) {
     if (!state.meta().stateId().equals(command.meta().stateId())) {
       throw DecisionException.invalidCommandStateId(command, state.meta().stateId());
     }
-    return validatedDecide(state, command);
   }
-
-  /**
-   * Called after stateId validated {@link #decide(State, Command)}
-   */
-  protected abstract DecisionResult validatedDecide(State state, Command command);
 
   /**
    * Helper function to create EventMeta from Command

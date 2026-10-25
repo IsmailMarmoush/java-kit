@@ -10,7 +10,7 @@ import com.marmoush.javakit.eventsourcing.processor.Decider;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.ChangeState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
-import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
+import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecisionLogic;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateChanged;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DeciderTest {
-  private final Decider decider = new SimpleDecider(EventId::randomUUID);
+  private final Decider decider = new Decider(new SimpleDecisionLogic(), EventId::randomUUID);
 
   @Test
   void decideCreation() {

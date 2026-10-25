@@ -9,11 +9,9 @@ import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.processor.Saga;
 import com.marmoush.javakit.eventsourcing.state.StateId;
-import com.marmoush.javakit.eventsourcing.usecase.banking.command.ConfirmDebit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.command.Credit;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.AccountEvent;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.CreditRejected;
-import com.marmoush.javakit.eventsourcing.usecase.banking.event.Credited;
 import com.marmoush.javakit.eventsourcing.usecase.banking.event.Debited;
 
 import java.util.Optional;
@@ -33,9 +31,6 @@ public class AccountSaga extends Saga {
       case Debited debited -> Optional.of(new Credit(commandMeta(debited.creditedAcc(), debited.meta().eventId()),
                                                      debited.meta().stateId(),
                                                      debited.amount()));
-      case Credited credited ->
-              Optional.of(new ConfirmDebit(commandMeta(credited.debitedAcc(), credited.meta().eventId()),
-                                           credited.meta().stateId()));
       case CreditRejected rejected ->
               Optional.of(new Credit(commandMeta(rejected.debitedAcc(), rejected.meta().eventId()),
                                      rejected.meta().stateId(),

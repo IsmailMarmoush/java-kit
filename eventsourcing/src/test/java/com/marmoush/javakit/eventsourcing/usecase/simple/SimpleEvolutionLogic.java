@@ -2,10 +2,10 @@ package com.marmoush.javakit.eventsourcing.usecase.simple;
 
 import com.marmoush.javakit.eventsourcing.event.Event;
 import com.marmoush.javakit.eventsourcing.exception.EvolutionException;
-import com.marmoush.javakit.eventsourcing.processor.Evolver;
+import com.marmoush.javakit.eventsourcing.processor.EvolutionLogic;
 import com.marmoush.javakit.eventsourcing.state.State;
 
-public class SimpleEvolver extends Evolver {
+public class SimpleEvolutionLogic implements EvolutionLogic {
   @Override
   public State evolve(Event event) {
     if (event instanceof StateCreated) {
@@ -16,7 +16,7 @@ public class SimpleEvolver extends Evolver {
   }
 
   @Override
-  public State validatedEvolve(State state, Event event) {
+  public State evolve(State state, Event event) {
     if (state instanceof SimpleState simpleState) {
       if (event instanceof StateChanged) {
         return simpleState.withMeta(event.meta());

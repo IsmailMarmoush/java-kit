@@ -4,10 +4,12 @@ import com.marmoush.javakit.eventsourcing.OperationType;
 import com.marmoush.javakit.eventsourcing.command.CommandId;
 import com.marmoush.javakit.eventsourcing.command.CommandMeta;
 import com.marmoush.javakit.eventsourcing.event.repo.EventRepo;
+import com.marmoush.javakit.eventsourcing.processor.Decider;
+import com.marmoush.javakit.eventsourcing.processor.Evolver;
 import com.marmoush.javakit.eventsourcing.state.StateId;
 import com.marmoush.javakit.eventsourcing.usecase.simple.CreateState;
-import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecider;
-import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolver;
+import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleDecisionLogic;
+import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolutionLogic;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
 
@@ -31,8 +33,9 @@ class DefaultCommandHandlerTest {
   }
 
   private static DefaultCommandHandler newAggregate(StateId stateId, EventRepo eventRepo) {
-    var decider = new SimpleDecider(() -> stateId);
-    return new DefaultCommandHandler(decider, new SimpleEvolver(), eventRepo);
+    return new DefaultCommandHandler(new Decider(new SimpleDecisionLogic(), () -> stateId),
+                                     new Evolver(new SimpleEvolutionLogic()),
+                                     eventRepo);
   }
 
   @SuppressWarnings("SameParameterValue")

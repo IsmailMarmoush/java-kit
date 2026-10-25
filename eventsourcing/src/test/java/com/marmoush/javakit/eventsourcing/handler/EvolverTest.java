@@ -6,7 +6,7 @@ import com.marmoush.javakit.eventsourcing.event.EventId;
 import com.marmoush.javakit.eventsourcing.event.EventMeta;
 import com.marmoush.javakit.eventsourcing.processor.Evolver;
 import com.marmoush.javakit.eventsourcing.state.StateId;
-import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolver;
+import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleEvolutionLogic;
 import com.marmoush.javakit.eventsourcing.usecase.simple.SimpleState;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateChanged;
 import com.marmoush.javakit.eventsourcing.usecase.simple.StateCreated;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EvolverTest {
-  private final Evolver evolver = new SimpleEvolver();
+  private final Evolver evolver = new Evolver(new SimpleEvolutionLogic());
 
   @Test
   void evolveCreation() {

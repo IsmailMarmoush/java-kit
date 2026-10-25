@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
-class DecisionResultTest {
+class DecisionLogicResultTest {
   private final Event event = new StateCreated(EventMeta.builder()
                                                         .eventId(EventId.of(0))
                                                         .operationType(OperationType.CREATION)
